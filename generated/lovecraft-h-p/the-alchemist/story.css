@@ -35,3 +35,19 @@ main p {
 main p + p {
 	text-indent: 1.5em;
 }
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		color-scheme: dark;
+		background-color: #181818;
+		color: #e6e6e6;
+	}
+
+	a {
+		color: #9ecbff;
+	}
+
+	a:visited {
+		color: #d2b3ff;
+	}
+}
