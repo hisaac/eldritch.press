@@ -3,7 +3,7 @@ idiomatic_version_file_enable_tools = ["python"]
 python.uv_venv_auto = "source"
 
 [tools]
-prettier = "3.10.1"
+prettier = "latest"
 ruff = "latest"
 ty = "latest"
 uv = "latest"
@@ -45,7 +45,7 @@ description = "Run the Python tests"
 run = "uv run pytest"
 
 [tasks.run]
-run = "msk"
+run = "uv run msk"
 
 [tasks.clean]
 description = "Remove generated EPUBs, build output, and coverage reports"
