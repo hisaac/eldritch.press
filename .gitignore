@@ -9,8 +9,7 @@
 .venv/
 __pycache__/
 
-# Generated EPUB archives
-build/
+# Generated distribution files
 dist/
 
 # Test coverage

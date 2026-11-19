@@ -2,7 +2,7 @@
 
 A little repo where I'm converting H.P. Lovecraft stories in the public domain to Markdown syntax.
 
-Miskatron currently generates browser HTML from those sources; EPUB and printable
+Miskatron generates browser HTML and EPUB editions from those sources. Printable
 zine PDFs are planned. Start with the [agent handoff](docs/handoff.md) for current
 status and next steps, or the [publishing design](docs/specs/2026-11-18-epub-publishing-design.md)
 for the agreed direction.
@@ -19,3 +19,33 @@ Run `mise run bootstrap` to sync the uv environment and development dependencies
 
 Ruff uses its default lint rules plus import sorting. Tool versions are locked in
 `uv.lock`.
+
+## Building the website
+
+`mise run build` runs `msk build ./stories/`. The directory is searched recursively for
+`book.yaml` files. Pass a story or author directory to preview a smaller catalog. Each
+site build replaces `build/` with the selected stories. Omitting the directory defaults to `./stories/`.
+
+Run `mise run build` to preview the complete site at `build/index.html` and inspect the unpacked EPUBs.
+Run `mise run dist` to assemble the distributable site and EPUB downloads in `dist/`. Open
+`dist/index.html` to browse the catalog and download an EPUB from either the
+catalog or its story page. GitHub Pages builds and deploys this directory on
+pushes to `main`. Temporary files live in `build/`; both directories are Git-ignored.
+
+## Building an EPUB
+
+From the repository root, run:
+
+```sh
+uv run msk build --format epub stories/lovecraft-h-p/the-tomb/
+```
+
+The book is written to `dist/lovecraft-h-p/the-tomb.epub`. Review its exact
+unpacked contents under `build/lovecraft-h-p/the-tomb/epub/`. Rebuilding
+replaces that directory. Make corrections in the sources or generator.
+
+The title page and publication note precede the story. Add an optional
+`editorial.md` beside `book.yaml` to extend the note, and `cover.png` for a
+library cover. The EPUB uses reader-default styling. Its identifier comes
+from the author and story directory names. The initial edition uses a fixed
+modification date in `src/miskatron/epub.py` for reproducible builds.

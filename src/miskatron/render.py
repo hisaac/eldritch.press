@@ -16,11 +16,12 @@ environment = Environment(
 )
 
 
-def render_web_page(story: Story, *, has_cover: bool = False) -> str:
+def render_web_page(story: Story, *, epub_href: str, has_cover: bool = False) -> str:
 	template = environment.get_template("story.html")
 	html = template.render(
 		story=story,
 		has_cover=has_cover,
+		epub_href=epub_href,
 		content=render_html(story),
 	)
 
@@ -47,6 +48,10 @@ def format_publication_file(content: str, filename: str) -> str:
 
 def render_html(story: Story) -> str:
 	"""Render the story body with typographic punctuation."""
+	return render_markdown(story.text)
+
+
+def render_markdown(text: str) -> str:
 	parser = MarkdownIt(
 		"commonmark",
 		{
@@ -55,7 +60,7 @@ def render_html(story: Story) -> str:
 			"typographer": False,
 		},
 	)
-	fragment = parser.render(story.text)
+	fragment = parser.render(text)
 	fragment = format_em_dashes(fragment)
 	fragment = format_ellipses(fragment)
 	fragment = format_quotes(fragment)

@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from miskatron.cli import build_all, build_story
+from miskatron.cli import build_all, build_story, main
 
 
 def test_catalog_links_to_built_stories(tmp_path, monkeypatch):
@@ -18,8 +18,13 @@ def test_catalog_links_to_built_stories(tmp_path, monkeypatch):
 		(folder / f"{slug}.md").write_text("Story text.")
 
 	build_all()
+	assert not Path("dist").exists()
+	assert Path("build/writer/first/epub/EPUB/story.xhtml").is_file()
+	assert Path("build/writer/first.epub").is_file()
+	build_all(Path("dist"))
+	assert Path("build/index.html").read_bytes() == Path("dist/index.html").read_bytes()
 
-	output = Path("generated")
+	output = Path("dist")
 	index = (output / "index.html").read_text()
 	assert 'href="story.css"' in index
 	assert (output / "story.css").is_file()
@@ -33,6 +38,10 @@ def test_catalog_links_to_built_stories(tmp_path, monkeypatch):
 		locations.append(writer.index(f'<a href="{href}">{title}</a>'))
 		page = (output / href).read_text()
 		assert page.index('href="../../index.html"') < page.index(f"<h1>{title}</h1>")
+		assert f'href="writer/{slug}.epub"' in writer
+		assert f'href="../{slug}.epub"' in page
+		assert (output / "writer" / f"{slug}.epub").is_file()
+	assert not list(output.rglob("*.xhtml"))
 	assert locations == sorted(locations)
 
 
@@ -60,3 +69,22 @@ def test_story_cover_is_copied_and_removed_when_source_is_removed(
 	build_story(folder)
 	assert 'src="cover.png"' not in page.read_text()
 	assert not (page.parent / "cover.png").exists()
+
+
+def test_build_directory_recursively(tmp_path, monkeypatch):
+	monkeypatch.chdir(tmp_path)
+	for slug in ("first", "second"):
+		folder = Path("library/group/writer") / slug
+		folder.mkdir(parents=True)
+		(folder / "book.yaml").write_text(
+			f"title: {slug}\nauthor: Writer\npublished: 1900\n"
+		)
+		(folder / f"{slug}.md").write_text("Story.")
+	for source, titles in [
+		("library", ["first", "second"]),
+		("library/group/writer/second", ["second"]),
+	]:
+		monkeypatch.setattr("sys.argv", ["msk", "build", source])
+		main()
+		assert sorted(p.stem for p in Path("build").rglob("*.epub")) == titles
+		assert not Path("dist").exists()

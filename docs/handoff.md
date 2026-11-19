@@ -1,5 +1,9 @@
 # Miskatron Handoff
 
+## Current publishing layout
+
+Run `mise run build` to preview the complete site in `build/`. Run `mise run dist` to assemble the HTML catalog, story pages, and EPUB downloads in `dist/`. GitHub Pages runs the same build and uploads that directory. Intermediate files, including the unpacked EPUBs, live in `build/`. Both output directories are Git-ignored. The notes below describe the earlier HTML milestone.
+
 ## Working With the User
 
 The user wants to learn Python by writing the implementation personally. Act as a guide: explain idioms, offer focused examples, inspect their work, and suggest the next small step. They have explicitly delegated tests, tooling, and documentation on occasion; that does not authorize taking over all implementation. Use long-form CLI flags when available. No automatic commits or pushes.

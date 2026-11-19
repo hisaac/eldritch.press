@@ -20,7 +20,11 @@ run = ["uv sync"]
 
 [tasks.build]
 description = "Build all stories and their index"
-run = "uv run msk build-all"
+run = "uv run msk build ./stories/"
+
+[tasks.dist]
+description = "Build the distribution website and EPUBs in dist/"
+run = "uv run msk dist"
 
 [tasks.check]
 alias = "chk"
@@ -49,10 +53,7 @@ run = "uv run msk"
 
 [tasks.clean]
 description = "Remove generated EPUBs, build output, and coverage reports"
-run = [
-  "rm -rf build dist generated htmlcov",
-  "rm -f .coverage .coverage.* coverage.xml",
-]
+run = ["rm -rf build dist htmlcov", "rm -f .coverage .coverage.* coverage.xml"]
 
 [tasks.nuke]
 description = "Clean generated output and delete all Git-ignored files (including .env)"

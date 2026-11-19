@@ -15,6 +15,7 @@
 			<header>
 				<h1>{{ story.title }}</h1>
 				<p class="byline">by {{ story.author }}</p>
+				<p><a href="{{ epub_href }}" download>Download EPUB</a></p>
 				{%- if has_cover -%}
 				<img class="cover" src="cover.png" alt="Cover of {{ story.title }}" />
 				{%- endif -%}
