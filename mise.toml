@@ -19,12 +19,8 @@ alias = "sync"
 run = ["uv sync"]
 
 [tasks.build]
-description = "Regenerate HTML and CSS for every story"
-run = """
-for book in stories/*/*/book.yaml; do
-  uv run msk build "${book%/book.yaml}" || exit 1
-done
-"""
+description = "Build all stories and their index"
+run = "uv run msk build-all"
 
 [tasks.check]
 alias = "chk"

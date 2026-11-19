@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Eldritch Press</title>
+	</head>
+	<body>
+		<main>
+			<h1>Eldritch Press</h1>
+			<ul>
+				{% for story, href in entries %}
+				<li><a href="{{ href }}">{{ story.title }}</a> by {{ story.author }}</li>
+				{% endfor %}
+			</ul>
+		</main>
+	</body>
+</html>

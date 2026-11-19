@@ -4,36 +4,56 @@ from pathlib import Path
 
 import yaml
 
-from miskatron.render import format_publication_file, render_web_page
+from miskatron.render import environment, format_publication_file, render_web_page
 from miskatron.story import Story
 
 
 def main() -> None:
-	parser = argparse.ArgumentParser(prog="misk")
+	parser = argparse.ArgumentParser(prog="msk")
 	commands = parser.add_subparsers(dest="command", required=True)
 
-	build_parser = commands.add_parser("build", help="Build a store EPUB")
+	build_parser = commands.add_parser("build", help="Build one story")
 	build_parser.add_argument("story_dir", type=Path)
 
+	commands.add_parser("build-all", help="Build all stories and their index")
 	args = parser.parse_args()
+	try:
+		if args.command == "build-all":
+			build_all()
+		else:
+			build_story(args.story_dir.resolve())
+	except (OSError, ValueError, TypeError, yaml.YAMLError) as error:
+		parser.error(str(error))
 
-	story_dir = args.story_dir.resolve()
+
+def build_all() -> None:
+	entries = []
+	for book in sorted(Path("stories").glob("*/*/book.yaml")):
+		story, page = build_story(book.parent)
+		entries.append((story, page.relative_to("generated").as_posix()))
+	entries.sort(key=lambda entry: entry[0].title.casefold())
+	template = environment.get_template("index.html")
+	html = format_publication_file(template.render(entries=entries), "index.html")
+	index = Path("generated/index.html")
+	index.parent.mkdir(exist_ok=True)
+	index.write_text(html, encoding="utf-8")
+	print(f"Wrote {index}")
+
+
+def build_story(story_dir: Path) -> tuple[Story, Path]:
 
 	if not story_dir.is_dir():
-		parser.error(f"Not a directory: {story_dir}")
+		raise ValueError(f"Not a directory: {story_dir}")
 
 	story_file = story_dir / f"{story_dir.name}.md"
 	if not story_file.is_file():
-		parser.error(f"Story file not found: {story_file}")
+		raise ValueError(f"Story file not found: {story_file}")
 
 	config_file = story_dir / "book.yaml"
-	if not story_file.is_file():
-		parser.error(f"Book config file not found: {config_file}")
+	if not config_file.is_file():
+		raise ValueError(f"Book config file not found: {config_file}")
 
-	try:
-		story = Story.from_files(story_file, config_file)
-	except (OSError, ValueError, TypeError, yaml.YAMLError) as error:
-		parser.error(str(error))
+	story = Story.from_files(story_file, config_file)
 
 	print(f"Loaded {story.title} by {story.author} ({story.published})")
 	print(f"Language: {story.language}")
@@ -52,3 +72,4 @@ def main() -> None:
 	output_file.write_text(html, encoding="utf-8")
 
 	print(f"Wrote {output_file}")
+	return story, output_file
