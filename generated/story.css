@@ -1,0 +1,30 @@
+body {
+	font-size: 1.125rem;
+	line-height: 1.6;
+}
+
+main {
+	max-width: 65ch;
+	margin: 3rem auto;
+	padding: 0 1rem;
+}
+
+main > header {
+	margin-bottom: 2rem;
+}
+
+main > header h1 {
+	margin-bottom: 0.25rem;
+}
+
+.byline {
+	font-size: 1rem;
+}
+
+main p {
+	margin-block: 0;
+}
+
+main p + p {
+	text-indent: 1.5em;
+}

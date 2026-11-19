@@ -4,15 +4,21 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>Eldritch Press</title>
+		<link rel="stylesheet" href="story.css">
 	</head>
 	<body>
 		<main>
 			<h1>Eldritch Press</h1>
-			<ul>
-				{% for story, href in entries %}
-				<li><a href="{{ href }}">{{ story.title }}</a> by {{ story.author }}</li>
-				{% endfor %}
-			</ul>
+			{%- for author, stories in entries | groupby("0.author") -%}
+			<section>
+				<h2>{{ author }}</h2>
+				<ul>
+					{%- for story, href in stories -%}
+					<li><a href="{{ href }}">{{ story.title }}</a> (<time>{{ story.published }}</time>)</li>
+					{%- endfor -%}
+				</ul>
+			</section>
+			{% endfor %}
 		</main>
 	</body>
 </html>

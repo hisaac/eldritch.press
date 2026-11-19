@@ -36,6 +36,7 @@ def build_all() -> None:
 	html = format_publication_file(template.render(entries=entries), "index.html")
 	index = Path("generated/index.html")
 	index.parent.mkdir(exist_ok=True)
+	write_stylesheet(index.parent)
 	index.write_text(html, encoding="utf-8")
 	print(f"Wrote {index}")
 
@@ -64,12 +65,16 @@ def build_story(story_dir: Path) -> tuple[Story, Path]:
 	output_dir = Path("generated") / story_dir.parent.name / story_dir.name
 	output_dir.mkdir(parents=True, exist_ok=True)
 
-	stylesheet = files("miskatron").joinpath("styles", "story.css")
-	css = format_publication_file(stylesheet.read_text(encoding="utf-8"), "story.css")
-	(output_dir / "story.css").write_text(css, encoding="utf-8")
+	write_stylesheet(output_dir)
 
 	output_file = output_dir / "index.html"
 	output_file.write_text(html, encoding="utf-8")
 
 	print(f"Wrote {output_file}")
 	return story, output_file
+
+
+def write_stylesheet(output_dir: Path) -> None:
+	stylesheet = files("miskatron").joinpath("styles", "story.css")
+	css = format_publication_file(stylesheet.read_text(encoding="utf-8"), "story.css")
+	(output_dir / "story.css").write_text(css, encoding="utf-8")
