@@ -1,14 +1,17 @@
 <!doctype html>
 <html lang="en">
 	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<title>Eldritch Press</title>
-		<link rel="stylesheet" href="story.css">
+		<link rel="stylesheet" href="story.css" />
 	</head>
 	<body>
 		<main>
 			<h1>Eldritch Press</h1>
+			<section>
+				<p>Eldritch Press is a small project by <a href="https://hisaac.net">Isaac Halvorson</a> to make short stories in the public domain more easily accessible. It is still very much a work in progress.</p>
+			</section>
 			{%- for author, stories in entries | groupby("0.author") -%}
 			<section>
 				<h2>{{ author }}</h2>
@@ -18,7 +21,10 @@
 					{%- endfor -%}
 				</ul>
 			</section>
-			{% endfor %}
+			{%- endfor -%}
+			<footer>
+				<p><a href="https://github.com/hisaac/eldritch.press">View on GitHub</a></p>
+			</footer>
 		</main>
 	</body>
 </html>
