@@ -10,7 +10,7 @@ concurrency:
 
 jobs:
   publish:
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       pages: write
@@ -20,6 +20,8 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v7
+      - name: Install PDF rendering libraries
+        run: sudo apt-get update && sudo apt-get install --yes libpango-1.0-0 libpangoft2-1.0-0 libharfbuzz-subset0 fonts-dejavu-core
       - uses: jdx/mise-action@v5
       - run: mise run dist
       - uses: actions/configure-pages@v6

@@ -15,11 +15,29 @@
 			{%- for author, stories in entries | groupby("0.author") -%}
 			<section>
 				<h2>{{ author }}</h2>
-				<ul>
-					{%- for story, href, epub_href in stories -%}
-					<li><a href="{{ href }}">{{ story.title }}</a> (<time>{{ story.published }}</time>) (<a href="{{ epub_href }}" aria-label="Download {{ story.title }} as an EPUB" download>epub</a>)</li>
-					{%- endfor -%}
-				</ul>
+				<table class="catalog">
+					<thead>
+						<tr>
+							<th scope="col">Title</th>
+							<th scope="col">Year</th>
+							<th scope="col">Downloads</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for story, href, epub_href, pdf_links in stories %}
+						<tr>
+							<td><a href="{{ href }}">{{ story.title }}</a></td>
+							<td><time>{{ story.published }}</time></td>
+							<td>
+								<a href="{{ epub_href }}" aria-label="Download {{ story.title }} as an EPUB" download>epub</a>
+								{% for paper, link in pdf_links %}
+								· <a href="{{ link }}" aria-label="Download {{ story.title }} as an {{ paper }} PDF" download>{{ paper }} pdf</a>
+								{% endfor %}
+							</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
 			</section>
 			{%- endfor -%}
 			<footer>

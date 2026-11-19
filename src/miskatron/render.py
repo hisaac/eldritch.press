@@ -5,6 +5,7 @@ import regex
 import smartypants
 from jinja2 import Environment, PackageLoader, StrictUndefined, select_autoescape
 from markdown_it.main import MarkdownIt
+from mdit_py_plugins.attrs import attrs_block_plugin
 
 from miskatron.story import Story
 
@@ -16,12 +17,21 @@ environment = Environment(
 )
 
 
-def render_web_page(story: Story, *, epub_href: str, has_cover: bool = False) -> str:
+def render_web_page(
+	story: Story,
+	*,
+	epub_href: str = "",
+	pdf_links: list[tuple[str, str]] | None = None,
+	print_page: bool = False,
+	has_cover: bool = False,
+) -> str:
 	template = environment.get_template("story.html")
 	html = template.render(
 		story=story,
 		has_cover=has_cover,
 		epub_href=epub_href,
+		pdf_links=pdf_links or [],
+		print_page=print_page,
 		content=render_html(story),
 	)
 
@@ -60,6 +70,7 @@ def render_markdown(text: str) -> str:
 			"typographer": False,
 		},
 	)
+	parser.use(attrs_block_plugin, allowed=["class"])
 	fragment = parser.render(text)
 	fragment = format_em_dashes(fragment)
 	fragment = format_ellipses(fragment)

@@ -19,10 +19,14 @@ def test_catalog_links_to_built_stories(tmp_path, monkeypatch):
 
 	build_all()
 	assert not Path("dist").exists()
-	assert Path("build/writer/first/epub/EPUB/story.xhtml").is_file()
-	assert Path("build/writer/first.epub").is_file()
+	assert Path("build/writer/first/ebook/EPUB/story.xhtml").is_file()
+	assert Path("build/writer/first/print/index.html").is_file()
+	assert Path("build/writer/first/print/a5.css").is_file()
+	assert not list(Path("build").rglob("*.epub"))
+	assert not list(Path("build").rglob("*.pdf"))
 	build_all(Path("dist"))
-	assert Path("build/index.html").read_bytes() == Path("dist/index.html").read_bytes()
+	preview_index = Path("build/index.html").read_text()
+	assert 'href="../dist/writer/first/ebook/first.epub"' in preview_index
 
 	output = Path("dist")
 	index = (output / "index.html").read_text()
@@ -31,16 +35,36 @@ def test_catalog_links_to_built_stories(tmp_path, monkeypatch):
 	assert index.count("<h2>Writer</h2>") == 1
 	poet, writer = index.split("<h2>Writer</h2>")
 	assert "<h2>Poet</h2>" in poet
-	assert '<a href="poet/third/index.html">Moon</a>' in poet
+	assert '<a href="poet/third/web/index.html">Moon</a>' in poet
+	for column in ("Title", "Year", "Downloads"):
+		assert f'<th scope="col">{column}</th>' in writer
 	locations = []
 	for slug, title in [("second", "Apple"), ("first", "Zebra")]:
-		href = f"writer/{slug}/index.html"
+		href = f"writer/{slug}/web/index.html"
 		locations.append(writer.index(f'<a href="{href}">{title}</a>'))
 		page = (output / href).read_text()
-		assert page.index('href="../../index.html"') < page.index(f"<h1>{title}</h1>")
-		assert f'href="writer/{slug}.epub"' in writer
-		assert f'href="../{slug}.epub"' in page
-		assert (output / "writer" / f"{slug}.epub").is_file()
+		preview = (Path("build") / href).read_text()
+		for asset in (
+			f"ebook/{slug}.epub",
+			f"print/{slug}-a4.pdf",
+			f"print/{slug}-a5.pdf",
+		):
+			assert f'href="../../../../dist/writer/{slug}/{asset}"' in preview
+		assert page.index('href="../../../index.html"') < page.index(
+			f"<h1>{title}</h1>"
+		)
+		assert f'href="writer/{slug}/ebook/{slug}.epub"' in writer
+		assert f'href="../ebook/{slug}.epub"' in page
+		assert (output / "writer" / slug / "ebook" / f"{slug}.epub").is_file()
+		for size in ["a4", "a5"]:
+			name = f"{slug}-{size}.pdf"
+			assert f'href="writer/{slug}/print/{name}"' in writer
+			assert f'href="../print/{name}"' in page
+			assert (
+				(output / "writer" / slug / "print" / name)
+				.read_bytes()
+				.startswith(b"%PDF-")
+			)
 	assert not list(output.rglob("*.xhtml"))
 	assert locations == sorted(locations)
 
@@ -86,5 +110,8 @@ def test_build_directory_recursively(tmp_path, monkeypatch):
 	]:
 		monkeypatch.setattr("sys.argv", ["msk", "build", source])
 		main()
-		assert sorted(p.stem for p in Path("build").rglob("*.epub")) == titles
+		assert (
+			sorted(p.parent.parent.name for p in Path("build").rglob("ebook/mimetype"))
+			== titles
+		)
 		assert not Path("dist").exists()

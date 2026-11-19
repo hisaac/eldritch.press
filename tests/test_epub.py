@@ -17,8 +17,8 @@ def test_epub_build(tmp_path, monkeypatch):
 	monkeypatch.setattr("sys.argv", ["msk", "build", "--format", "epub", str(folder)])
 	main()
 
-	root = Path("build/writer/evening/epub")
-	archive = Path("dist/writer/evening.epub")
+	root = Path("build/writer/evening/ebook")
+	archive = Path("dist/writer/evening/ebook/evening.epub")
 	with ZipFile(archive) as package:
 		expected = {name: package.read(name) for name in package.namelist()}
 

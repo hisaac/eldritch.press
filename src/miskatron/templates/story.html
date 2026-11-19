@@ -6,16 +6,24 @@
 		<title>{{ story.title }}</title>
 		<meta name="author" content="{{ story.author }}" />
 		<link rel="stylesheet" href="story.css" />
+		{% if print_page %}<link rel="stylesheet" href="print.css" media="print" />{% endif %}
 	</head>
 	<body>
 		<main>
-			<nav aria-label="Story navigation">
-				<a href="../../index.html">Eldritch Press</a>
-			</nav>
+			{% if not print_page %}<nav aria-label="Story navigation">
+				<a href="../../../index.html">Eldritch Press</a>
+			</nav>{% endif %}
 			<header>
 				<h1>{{ story.title }}</h1>
 				<p class="byline">by {{ story.author }}</p>
-				<p><a href="{{ epub_href }}" download>Download EPUB</a></p>
+				{% if epub_href %}
+				<p>
+					<a href="{{ epub_href }}" download>epub</a>
+					{% for paper, link in pdf_links %}
+					· <a href="{{ link }}" download>{{ paper }} pdf</a>
+					{% endfor %}
+				</p>
+				{% endif %}
 				{%- if has_cover -%}
 				<img class="cover" src="cover.png" alt="Cover of {{ story.title }}" />
 				{%- endif -%}

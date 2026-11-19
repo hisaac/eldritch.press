@@ -54,7 +54,7 @@ def build_epub(
 	for item in [title, front, body, epub.EpubNav(), epub.EpubNcx()]:
 		book.add_item(item)
 
-	archive = site / key.parent / f"{folder.name}.epub"
+	archive = site / key / "ebook" / f"{folder.name}.epub"
 	archive.parent.mkdir(parents=True, exist_ok=True)
 	with TemporaryDirectory(dir=archive.parent) as work:
 		staged = Path(work) / archive.name
@@ -64,7 +64,7 @@ def build_epub(
 			{"mtime": EDITION_MODIFIED, "epub2_guide": False, "raise_exceptions": True},
 		)
 		if unpack_root is not None:
-			output = unpack_root / key / "epub"
+			output = unpack_root / key / "ebook"
 			output.parent.mkdir(parents=True, exist_ok=True)
 			tree = Path(work) / "contents"
 			with ZipFile(staged) as package:

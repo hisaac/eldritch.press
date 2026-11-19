@@ -27,13 +27,14 @@ In the grey light of dawn I staggered from the vault and locked the chain of the
 
 Henceforward I haunted the tomb each night; seeing, hearing, and doing things I must never reveal. My speech, always susceptible to environmental influences, was the first thing to succumb to the change; and my suddenly acquired archaism of diction was soon remarked upon. Later a queer boldness and recklessness came into my demeanour, till I unconsciously grew to possess the bearing of a man of the world despite my lifelong seclusion. My formerly silent tongue waxed voluble with the easy grace of a Chesterfield or the godless cynicism of a Rochester. I displayed a peculiar erudition utterly unlike the fantastic, monkish lore over which I had pored in youth; and covered the flyleaves of my books with facile impromptu epigrams which brought up suggestions of Gay, Prior, and the sprightliest of the Augustan wits and rimesters. One morning at breakfast I came close to disaster by declaiming in palpably liquorish accents an effusion of eighteenth-century Bacchanalian mirth; a bit of Georgian playfulness never recorded in a book, which ran something like this:
 
+{.poetry}
 > Come hither, my lads, with your tankards of ale,\
 > And drink to the present before it shall fail;\
 > Pile each on your platter a mountain of beef,\
 > For 'tis eating and drinking that bring us relief:\
 > &nbsp;&nbsp;&nbsp;&nbsp;So fill up your glass,\
 > &nbsp;&nbsp;&nbsp;&nbsp;For life will soon pass;\
-> When you're dead ye'll ne'er drink to your king or your lass!\
+> When you're dead ye'll ne'er drink to your king or your lass!
 >
 > Anacreon had a red nose, so they say;\
 > But what's a red nose if ye're happy and gay?\
@@ -41,7 +42,7 @@ Henceforward I haunted the tomb each night; seeing, hearing, and doing things I 
 > Than white as a lily—and dead half a year!\
 > &nbsp;&nbsp;&nbsp;&nbsp;So Betty, my miss,\
 > &nbsp;&nbsp;&nbsp;&nbsp;Come give me a kiss;\
-> In hell there's no innkeeper's daughter like this!\
+> In hell there's no innkeeper's daughter like this!
 >
 > Young Harry, propp'd up just as straight as he's able,\
 > Will soon lose his wig and slip under the table;\
@@ -49,7 +50,7 @@ Henceforward I haunted the tomb each night; seeing, hearing, and doing things I 
 > Better under the table than under the ground!\
 > &nbsp;&nbsp;&nbsp;&nbsp;So revel and chaff\
 > &nbsp;&nbsp;&nbsp;&nbsp;As ye thirstily quaff:\
-> Under six feet of dirt 'tis less easy to laugh!\
+> Under six feet of dirt 'tis less easy to laugh!
 >
 > The fiend strike me blue! I'm scarce able to walk,\
 > And damn me if I can stand upright or talk!\
