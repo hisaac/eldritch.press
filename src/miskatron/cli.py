@@ -1,4 +1,5 @@
 import argparse
+import shutil
 from importlib.resources import files
 from pathlib import Path
 
@@ -60,12 +61,17 @@ def build_story(story_dir: Path) -> tuple[Story, Path]:
 	print(f"Language: {story.language}")
 	print(f"Text length: {len(story.text)} characters")
 
-	html = render_web_page(story)
+	cover = story_dir / "cover.png"
+	html = render_web_page(story, has_cover=cover.is_file())
 
 	output_dir = Path("generated") / story_dir.parent.name / story_dir.name
 	output_dir.mkdir(parents=True, exist_ok=True)
 
 	write_stylesheet(output_dir)
+	if cover.is_file():
+		shutil.copyfile(cover, output_dir / "cover.png")
+	else:
+		(output_dir / "cover.png").unlink(missing_ok=True)
 
 	output_file = output_dir / "index.html"
 	output_file.write_text(html, encoding="utf-8")

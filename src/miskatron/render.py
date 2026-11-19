@@ -16,10 +16,11 @@ environment = Environment(
 )
 
 
-def render_web_page(story: Story) -> str:
+def render_web_page(story: Story, *, has_cover: bool = False) -> str:
 	template = environment.get_template("story.html")
 	html = template.render(
 		story=story,
+		has_cover=has_cover,
 		content=render_html(story),
 	)
 

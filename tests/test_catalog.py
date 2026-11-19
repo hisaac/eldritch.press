@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from miskatron.cli import build_all
+from miskatron.cli import build_all, build_story
 
 
 def test_catalog_links_to_built_stories(tmp_path, monkeypatch):
@@ -34,3 +34,29 @@ def test_catalog_links_to_built_stories(tmp_path, monkeypatch):
 		page = (output / href).read_text()
 		assert page.index('href="../../index.html"') < page.index(f"<h1>{title}</h1>")
 	assert locations == sorted(locations)
+
+
+def test_story_cover_is_copied_and_removed_when_source_is_removed(
+	tmp_path, monkeypatch
+):
+	monkeypatch.chdir(tmp_path)
+	folder = Path("stories/writer/evening")
+	folder.mkdir(parents=True)
+	(folder / "book.yaml").write_text(
+		"title: Evening\nauthor: A. Writer\npublished: 1900\n"
+	)
+	(folder / "evening.md").write_text("Story text.")
+	cover = folder / "cover.png"
+	cover.write_bytes(b"fictional cover image")
+
+	_, page = build_story(folder)
+	html = page.read_text()
+	assert 'src="cover.png"' in html
+	assert 'alt="Cover of Evening"' in html
+	assert html.index('src="cover.png"') < html.index("Story text.")
+	assert (page.parent / "cover.png").read_bytes() == cover.read_bytes()
+
+	cover.unlink()
+	build_story(folder)
+	assert 'src="cover.png"' not in page.read_text()
+	assert not (page.parent / "cover.png").exists()
