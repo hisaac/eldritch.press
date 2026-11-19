@@ -1,0 +1,7 @@
+useTabs: true
+overrides:
+  - files: "*.html"
+    options:
+      # Prettier wraps HTML at printWidth. A high limit keeps each prose
+      # paragraph on one source line so edits are easy to review in Git.
+      printWidth: 1000000

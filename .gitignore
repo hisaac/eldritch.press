@@ -1,0 +1,20 @@
+.DS_Store
+.env
+
+# Python environments and caches
+*.egg-info/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.venv/
+__pycache__/
+
+# Generated EPUB archives
+build/
+dist/
+
+# Test coverage
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/

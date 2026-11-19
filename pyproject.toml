@@ -1,0 +1,38 @@
+[project]
+name = "miskatron"
+version = "0.1.0"
+description = "CLI toolset for managing and generating ebooks in the eldritch.press repository"
+authors = [
+	{ name = "Isaac Halvorson", email = "hello@hisaac.net" }
+]
+requires-python = ">=3.15"
+dependencies = [
+    "djlint>=1.54.0",
+    "jinja2>=3.1.6",
+    "markdown-it-py>=4.3.0",
+    "pyyaml>=6.0.3",
+    "regex>=2026.11.19",
+    "smartypants>=2.0.2",
+    "utidylib>=1.1.0",
+]
+
+[project.scripts]
+msk = "miskatron.cli:main"
+
+[build-system]
+requires = ["uv_build>=0.13.9,<0.14.0"]
+build-backend = "uv_build"
+
+[tool.ruff.lint]
+extend-select = ["I"]
+
+[tool.ruff.format]
+indent-style = "tab"
+line-ending = "lf"
+
+[dependency-groups]
+dev = [
+	"pytest>=9.2.0",
+	"ruff>=0.17.5",
+	"ty>=0.0.106",
+]

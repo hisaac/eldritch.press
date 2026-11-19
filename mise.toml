@@ -1,0 +1,64 @@
+[settings]
+idiomatic_version_file_enable_tools = ["python"]
+python.uv_venv_auto = "source"
+
+[tools]
+prettier = "3.10.1"
+ruff = "latest"
+ty = "latest"
+uv = "latest"
+
+[env]
+UV_PYTHON = { value = "{{ tools.python.path }}", tools = true }
+
+[hooks]
+postinstall = "mise run sync"
+
+[tasks.bootstrap]
+alias = "sync"
+run = ["uv sync"]
+
+[tasks.build]
+description = "Regenerate HTML and CSS for every story"
+run = """
+for book in stories/*/*/book.yaml; do
+  uv run msk build "${book%/book.yaml}" || exit 1
+done
+"""
+
+[tasks.check]
+alias = "chk"
+depends = ["lint", "typecheck", "test"]
+
+[tasks.fix]
+alias = "format"
+run = ["mise fmt", "uv run ruff format ."]
+
+[tasks.lint]
+run = [
+  "mise fmt --check",
+  "uv run ruff check .",
+  "uv run ruff format --check .",
+]
+
+[tasks.typecheck]
+run = "uv run ty check"
+
+[tasks.test]
+description = "Run the Python tests"
+run = "uv run pytest"
+
+[tasks.run]
+run = "msk"
+
+[tasks.clean]
+description = "Remove generated EPUBs, build output, and coverage reports"
+run = [
+  "rm -rf build dist generated htmlcov",
+  "rm -f .coverage .coverage.* coverage.xml",
+]
+
+[tasks.nuke]
+description = "Clean generated output and delete all Git-ignored files (including .env)"
+depends = ["clean"]
+run = "git clean -dX --force"

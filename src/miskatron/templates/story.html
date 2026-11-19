@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="{{ story.language }}">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>{{ story.title }}</title>
+		<meta name="author" content="{{ story.author }}" />
+		<link rel="stylesheet" href="story.css" />
+	</head>
+	<body>
+		<main>
+			<header>
+				<h1>{{ story.title }}</h1>
+				<p class="byline">by {{ story.author }}</p>
+			</header>
+			{{ content.rstrip('\n') | safe }}
+		</main>
+	</body>
+</html>
