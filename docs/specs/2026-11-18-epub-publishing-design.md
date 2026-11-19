@@ -30,10 +30,10 @@ Use Mise for tool management, continuing the existing `mise.toml` convention, an
 
 ## Proposed Repository Layout
 
-Story sources have moved to `stories/`. The following layout describes the intended publishing structure; `build.py`, editorial files, and EPUB packaging are not implemented yet:
+Story sources have moved to `src/stories/`. The following layout describes the intended publishing structure; `build.py`, editorial files, and EPUB packaging are not implemented yet:
 
 ```text
-stories/lovecraft-h-p/the-tomb/
+src/stories/lovecraft-h-p/the-tomb/
   the-tomb.md
   editorial.md
   book.yaml                  # shared story metadata and edition configuration
@@ -53,7 +53,7 @@ pyproject.toml               # project metadata, dependencies, msk entry point
 uv.lock                     # tracked dependency lockfile
 ```
 
-`stories/` describes the source's purpose and accommodates editorial text or future cover assets. `generated/` makes the generated status explicit. Keep archived sources in `reference/`; do not reorganize them as part of the first milestone.
+`src/stories/` describes the source's purpose and accommodates editorial text or future cover assets. `generated/` makes the generated status explicit. Keep archived sources in `reference/`; do not reorganize them as part of the first milestone.
 
 The agreed source format uses a sidecar `book.yaml` for story title, author, original publication year, and language (defaulting to `en`). Markdown contains the story text without duplicated YAML front matter. EPUB, PDF, and HTML generation should consume this same source and metadata. `editorial.md` supplies human-authored source and edition notes. Its exact contents remain to be written. Distinguish original publication information from edition metadata.
 
@@ -80,7 +80,7 @@ Plan to review rendered pages and a physical folded print sample. Decide which i
 The current build command generates HTML. EPUB command selection is still to be designed; the existing invocation through the Mise-managed environment is:
 
 ```sh
-mise exec -- uv run msk build stories/lovecraft-h-p/the-tomb/
+mise exec -- uv run msk build src/stories/lovecraft-h-p/the-tomb/
 ```
 
 The planned EPUB build will read the source, validate required metadata, render XHTML and navigation, and write the complete unpacked EPUB tree plus its packaged `.epub`. Publication order is title page, editorial information, then story. Navigation exposes the front matter and story; the `bodymatter` landmark targets the story title and opening text.

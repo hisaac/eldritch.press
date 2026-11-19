@@ -21,33 +21,33 @@ Ruff uses its default lint rules plus import sorting. Tool versions are locked i
 
 ## Building the website
 
-`mise run build` runs `msk build ./stories/`. The directory is searched recursively for
+`mise run build` runs `msk build ./src/stories/`. The directory is searched recursively for
 `book.yaml` files. Pass a story or author directory to preview a smaller catalog. Each
-site build replaces `build/` with the selected stories. Omitting the directory defaults to `./stories/`.
+site build replaces `editions/` with the selected stories. Omitting the directory defaults to `./src/stories/`.
 
-Each story has three directories under `<author>/<title>/`. In `build/`,
+Each story has three directories under `<author>/<title>/`. In `editions/`,
 `web/` contains the browser page and assets, `ebook/` contains the unpacked EPUB,
 and `print/` contains the print HTML, shared styles, and A4/A5 stylesheets.
-For example, from a story's `build/.../print/` directory, run
+For example, from a story's `editions/.../print/` directory, run
 `weasyprint --stylesheet a5.css index.html sample.pdf` to render the A5 edition.
 In `dist/`, the web page links to the packaged EPUB in `ebook/` and PDFs in `print/`.
 
-Run `mise run build` to preview the complete site at `build/index.html` and inspect the unpacked EPUBs.
+Run `mise run build` to preview the complete site at `editions/index.html` and inspect the unpacked EPUBs.
 Run `mise run dist` to assemble the distributable site and EPUB downloads in `dist/`. Open
 `dist/index.html` to browse the catalog and download an EPUB from either the
 catalog or its story page. GitHub Pages builds and deploys this directory on
-pushes to `main`. Temporary files live in `build/`; distribution files are Git-ignored.
+pushes to `main`. Reviewable editions are tracked in Git. Python uses the system temporary directory for build work. Distribution files are Git-ignored.
 
 ## Building an EPUB
 
 From the repository root, run:
 
 ```sh
-uv run msk build --format epub stories/lovecraft-h-p/the-tomb/
+uv run msk build --format epub src/stories/lovecraft-h-p/the-tomb/
 ```
 
 The book is written to `dist/lovecraft-h-p/the-tomb/ebook/the-tomb.epub`. Review its exact
-unpacked contents under `build/lovecraft-h-p/the-tomb/ebook/`. Rebuilding
+unpacked contents under `editions/lovecraft-h-p/the-tomb/ebook/`. Rebuilding
 replaces that directory. Make corrections in the sources or generator.
 
 The title page and publication note precede the story. Add an optional
@@ -68,7 +68,7 @@ in `src/miskatron/styles/print.css` for pagination and margins. Pages are in
 reading order. To generate only the A5 PDF under `dist/<author>/<title>/print/`, run:
 
 ```sh
-uv run msk build --format pdf --paper A5 stories/lovecraft-h-p/the-tomb/
+uv run msk build --format pdf --paper A5 src/stories/lovecraft-h-p/the-tomb/
 ```
 
 Omit `--paper` to generate both sizes.

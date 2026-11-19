@@ -20,7 +20,7 @@ def main() -> None:
 		"build", help="Build stories found recursively under a directory"
 	)
 	build_parser.add_argument(
-		"directory", type=Path, nargs="?", default=Path("stories")
+		"directory", type=Path, nargs="?", default=Path("src/stories")
 	)
 	build_parser.add_argument(
 		"--format", choices=("html", "epub", "pdf"), default="html"
@@ -54,7 +54,7 @@ def main() -> None:
 						(args.paper,) if args.paper else PAPER_SIZES,
 					)
 			else:
-				build_site(folders, Path("build"))
+				build_site(folders, Path("editions"))
 	except (OSError, ValueError, TypeError, yaml.YAMLError) as error:
 		parser.error(str(error))
 
@@ -76,8 +76,8 @@ def discover_stories(directory: Path) -> list[Path]:
 	return folders
 
 
-def build_all(output: Path = Path("build")) -> None:
-	build_site(discover_stories(Path("stories")), output)
+def build_all(output: Path = Path("editions")) -> None:
+	build_site(discover_stories(Path("src/stories")), output)
 
 
 def build_site(folders: list[Path], output: Path) -> None:
@@ -85,18 +85,18 @@ def build_site(folders: list[Path], output: Path) -> None:
 		raise ValueError(
 			f"Story sources must be outside the output directory: {output}"
 		)
-	with TemporaryDirectory(dir=output.parent) as tmp:
+	with TemporaryDirectory() as tmp:
 		site = Path(tmp) / "site"
 		site.mkdir()
-		assemble_site(site, folders, sources_only=output == Path("build"))
+		assemble_site(site, folders, sources_only=output == Path("editions"))
 		previous = Path(tmp) / "previous"
 		if output.exists():
-			output.rename(previous)
+			output.move(previous)
 		try:
-			site.rename(output)
+			site.move(output)
 		except OSError:
 			if previous.exists():
-				previous.rename(output)
+				previous.move(output)
 			raise
 	print(f"Wrote {output / 'index.html'}")
 

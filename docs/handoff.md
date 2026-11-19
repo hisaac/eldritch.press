@@ -2,7 +2,7 @@
 
 ## Current publishing layout
 
-Run `mise run build` to preview the complete site in `build/`. Run `mise run dist` to assemble the HTML catalog, story pages, and EPUB downloads in `dist/`. GitHub Pages runs the same build and uploads that directory. Intermediate files, including the unpacked EPUBs, live in `build/`. Both output directories are Git-ignored. The notes below describe the earlier HTML milestone.
+Run `mise run build` to generate the tracked web, ebook, and print sources in `editions/`. Run `mise run dist` to assemble the website and EPUB/PDF downloads in `dist/`. GitHub Pages deploys that directory. Both commands stage work in Python’s default temporary directory. Git ignores `dist/`. The notes below describe the earlier HTML milestone.
 
 ## Working With the User
 
@@ -23,7 +23,7 @@ The current entry point is `msk = "miskatron.cli:main"`. From the repository roo
 
 ```sh
 mise run sync
-uv run msk build stories/lovecraft-h-p/the-tomb/
+uv run msk build src/stories/lovecraft-h-p/the-tomb/
 mise run check
 ```
 

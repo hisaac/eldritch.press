@@ -9,8 +9,9 @@
 .venv/
 __pycache__/
 
-# Generated distribution files
-dist/
+# Temporary build files and generated distribution files
+/build/
+/dist/
 
 # Test coverage
 .coverage

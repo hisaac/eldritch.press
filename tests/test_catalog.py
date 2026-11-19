@@ -10,7 +10,7 @@ def test_catalog_links_to_built_stories(tmp_path, monkeypatch):
 		("Writer", "second", "Apple"),
 		("Poet", "third", "Moon"),
 	]:
-		folder = Path("stories") / author.lower() / slug
+		folder = Path("src/stories") / author.lower() / slug
 		folder.mkdir(parents=True)
 		(folder / "book.yaml").write_text(
 			f"title: {title}\nauthor: {author}\npublished: 1900\n"
@@ -19,13 +19,14 @@ def test_catalog_links_to_built_stories(tmp_path, monkeypatch):
 
 	build_all()
 	assert not Path("dist").exists()
-	assert Path("build/writer/first/ebook/EPUB/story.xhtml").is_file()
-	assert Path("build/writer/first/print/index.html").is_file()
-	assert Path("build/writer/first/print/a5.css").is_file()
-	assert not list(Path("build").rglob("*.epub"))
-	assert not list(Path("build").rglob("*.pdf"))
+	assert Path("editions/writer/first/ebook/EPUB/story.xhtml").is_file()
+	assert Path("editions/writer/first/print/index.html").is_file()
+	assert Path("editions/writer/first/print/a5.css").is_file()
+	assert not list(Path("editions").rglob("*.epub"))
+	assert not list(Path("editions").rglob("*.pdf"))
 	build_all(Path("dist"))
-	preview_index = Path("build/index.html").read_text()
+	assert not Path("build").exists()
+	preview_index = Path("editions/index.html").read_text()
 	assert 'href="../dist/writer/first/ebook/first.epub"' in preview_index
 
 	output = Path("dist")
@@ -43,7 +44,7 @@ def test_catalog_links_to_built_stories(tmp_path, monkeypatch):
 		href = f"writer/{slug}/web/index.html"
 		locations.append(writer.index(f'<a href="{href}">{title}</a>'))
 		page = (output / href).read_text()
-		preview = (Path("build") / href).read_text()
+		preview = (Path("editions") / href).read_text()
 		for asset in (
 			f"ebook/{slug}.epub",
 			f"print/{slug}-a4.pdf",
@@ -73,7 +74,7 @@ def test_story_cover_is_copied_and_removed_when_source_is_removed(
 	tmp_path, monkeypatch
 ):
 	monkeypatch.chdir(tmp_path)
-	folder = Path("stories/writer/evening")
+	folder = Path("src/stories/writer/evening")
 	folder.mkdir(parents=True)
 	(folder / "book.yaml").write_text(
 		"title: Evening\nauthor: A. Writer\npublished: 1900\n"
@@ -111,7 +112,9 @@ def test_build_directory_recursively(tmp_path, monkeypatch):
 		monkeypatch.setattr("sys.argv", ["msk", "build", source])
 		main()
 		assert (
-			sorted(p.parent.parent.name for p in Path("build").rglob("ebook/mimetype"))
+			sorted(
+				p.parent.parent.name for p in Path("editions").rglob("ebook/mimetype")
+			)
 			== titles
 		)
 		assert not Path("dist").exists()

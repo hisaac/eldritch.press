@@ -10,11 +10,11 @@ Read [the handoff](docs/handoff.md) for current status and [the publishing desig
 
 Miskatron publishes individual public-domain stories. Browser HTML is the current milestone; EPUB and printable zine PDFs follow. Collections are out of scope.
 
-- `stories/<author>/<story>/<story>.md`: authoritative story text.
+- `src/stories/<author>/<story>/<story>.md`: authoritative story text.
 - `book.yaml` beside each story: title, author, integer publication year, and optional language (defaults to `en`).
 - `src/miskatron/`: Python package; `cli.py` handles arguments and output, `story.py` loads metadata/text, and `render.py` renders HTML using `templates/story.html`.
 - `tests/`: pytest tests using fictional data and temporary files.
-- `build/`: temporary generated files, including unpacked EPUB contents.
+- `editions/`: tracked web, unpacked EPUB, and print sources for review.
 - `dist/`: assembled website and downloadable EPUBs, deployed by GitHub Pages.
 - `reference/`: archived sources; preserve unless explicitly working on them.
 
@@ -27,7 +27,7 @@ Mise reads Python from `.python-version`; uv manages dependencies, `.venv`, and 
 - `mise run test`: pytest.
 - `mise run format`: format Mise configuration and Python.
 - `mise run typecheck`: ty.
-- `uv run msk build stories/lovecraft-h-p/the-tomb/`: generate HTML; run from the repository root.
+- `uv run msk build src/stories/lovecraft-h-p/the-tomb/`: generate HTML; run from the repository root.
 
 `clean` deletes generated/build output. `nuke` also deletes Git-ignored files, including `.venv` and `.env`; do not run either as routine verification.
 

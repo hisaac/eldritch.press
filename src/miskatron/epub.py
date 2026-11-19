@@ -24,7 +24,7 @@ def build_epub(
 	folder: Path,
 	site: Path = Path("dist"),
 	*,
-	unpack_root: Path | None = Path("build"),
+	unpack_root: Path | None = Path("editions"),
 ) -> Path:
 	key = Path(folder.parent.name) / folder.name
 	book = epub.EpubBook()
@@ -56,7 +56,7 @@ def build_epub(
 
 	archive = site / key / "ebook" / f"{folder.name}.epub"
 	archive.parent.mkdir(parents=True, exist_ok=True)
-	with TemporaryDirectory(dir=archive.parent) as work:
+	with TemporaryDirectory() as work:
 		staged = Path(work) / archive.name
 		epub.write_epub(
 			staged,
@@ -70,7 +70,7 @@ def build_epub(
 			with ZipFile(staged) as package:
 				package.extractall(tree)
 			if output.exists():
-				output.rename(Path(work) / "previous")
-			tree.rename(output)
-		staged.replace(archive)
+				output.move(Path(work) / "previous")
+			tree.move(output)
+		staged.move(archive)
 	return archive

@@ -20,7 +20,7 @@ run = ["uv sync"]
 
 [tasks.build]
 description = "Build all stories and their index"
-run = "uv run msk build ./stories/"
+run = "uv run msk build ./src/stories/"
 
 [tasks.dist]
 description = "Build the distribution website and EPUBs in dist/"
