@@ -17,26 +17,6 @@ main > header h1 {
 	margin-bottom: 0.25rem;
 }
 
-.catalog {
-	width: 100%;
-	border-collapse: collapse;
-}
-
-.catalog th,
-.catalog td {
-	text-align: start;
-	vertical-align: top;
-	padding: 0.4em 0.6em;
-}
-
-.catalog thead {
-	border-bottom: 1px solid currentColor;
-}
-
-.catalog a[download] {
-	white-space: nowrap;
-}
-
 .byline {
 	font-size: 1rem;
 }

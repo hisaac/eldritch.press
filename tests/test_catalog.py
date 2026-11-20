@@ -27,18 +27,25 @@ def test_catalog_links_to_built_stories(tmp_path, monkeypatch):
 	build_all(Path("dist"))
 	assert not Path("build").exists()
 	preview_index = Path("editions/index.html").read_text()
-	assert 'href="../dist/writer/first/ebook/first.epub"' in preview_index
 
 	output = Path("dist")
 	index = (output / "index.html").read_text()
+	for catalog in (preview_index, index):
+		assert '.epub"' not in catalog
+		assert '.pdf"' not in catalog
 	assert 'href="story.css"' in index
-	assert (output / "story.css").is_file()
+	for root in (Path("editions"), output):
+		assert list(root.rglob("story.css")) == [root / "story.css"]
+		for page in root.glob("*/*/*/index.html"):
+			assert 'href="../../../story.css"' in page.read_text()
+			assert (page.parent / "../../../story.css").samefile(root / "story.css")
 	assert index.count("<h2>Writer</h2>") == 1
 	poet, writer = index.split("<h2>Writer</h2>")
 	assert "<h2>Poet</h2>" in poet
 	assert '<a href="poet/third/web/index.html">Moon</a>' in poet
-	for column in ("Title", "Year", "Downloads"):
-		assert f'<th scope="col">{column}</th>' in writer
+	for section, count in [(poet, 1), (writer, 2)]:
+		assert section.count("<ul>") == 1
+		assert section.count("<li>") == count
 	locations = []
 	for slug, title in [("second", "Apple"), ("first", "Zebra")]:
 		href = f"writer/{slug}/web/index.html"
@@ -54,12 +61,10 @@ def test_catalog_links_to_built_stories(tmp_path, monkeypatch):
 		assert page.index('href="../../../index.html"') < page.index(
 			f"<h1>{title}</h1>"
 		)
-		assert f'href="writer/{slug}/ebook/{slug}.epub"' in writer
 		assert f'href="../ebook/{slug}.epub"' in page
 		assert (output / "writer" / slug / "ebook" / f"{slug}.epub").is_file()
 		for size in ["a4", "a5"]:
 			name = f"{slug}-{size}.pdf"
-			assert f'href="writer/{slug}/print/{name}"' in writer
 			assert f'href="../print/{name}"' in page
 			assert (
 				(output / "writer" / slug / "print" / name)

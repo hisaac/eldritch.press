@@ -20,6 +20,7 @@ environment = Environment(
 def render_web_page(
 	story: Story,
 	*,
+	stylesheet_href: str = "story.css",
 	epub_href: str = "",
 	pdf_links: list[tuple[str, str]] | None = None,
 	print_page: bool = False,
@@ -28,6 +29,7 @@ def render_web_page(
 	template = environment.get_template("story.html")
 	html = template.render(
 		story=story,
+		stylesheet_href=stylesheet_href,
 		has_cover=has_cover,
 		epub_href=epub_href,
 		pdf_links=pdf_links or [],

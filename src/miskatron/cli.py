@@ -102,33 +102,18 @@ def build_site(folders: list[Path], output: Path) -> None:
 
 
 def assemble_site(site: Path, folders: list[Path], *, sources_only: bool) -> None:
+	stylesheet = write_stylesheet(site)
 	entries = []
 	for folder in folders:
-		story, page = build_story(folder, site, sources_only=sources_only)
-		href = page.relative_to(site)
-		downloads = href.parent.parent
-		if sources_only:
-			downloads = Path("../dist") / downloads
-		entries.append(
-			(
-				story,
-				href.as_posix(),
-				(downloads / "ebook" / f"{folder.name}.epub").as_posix(),
-				[
-					(
-						paper,
-						(downloads / "print" / pdf_name(folder.name, paper)).as_posix(),
-					)
-					for paper in PAPER_SIZES
-				],
-			)
+		story, page = build_story(
+			folder, site, sources_only=sources_only, stylesheet=stylesheet
 		)
+		entries.append((story, page.relative_to(site).as_posix()))
 	entries.sort(key=lambda entry: entry[0].title.casefold())
 	template = environment.get_template("index.html")
 	html = format_publication_file(template.render(entries=entries), "index.html")
 	index = site / "index.html"
 	index.parent.mkdir(exist_ok=True)
-	write_stylesheet(index.parent)
 	index.write_text(html, encoding="utf-8")
 
 
@@ -153,6 +138,7 @@ def build_story(
 	site: Path = Path("dist"),
 	*,
 	sources_only: bool = False,
+	stylesheet: Path | None = None,
 ) -> tuple[Story, Path]:
 	story = load_story(story_dir)
 
@@ -161,10 +147,15 @@ def build_story(
 	print(f"Text length: {len(story.text)} characters")
 
 	root = site / story_dir.parent.name / story_dir.name
+	if stylesheet is None:
+		stylesheet = write_stylesheet(site)
+	stylesheet_href = stylesheet.relative_to(root / "web", walk_up=True).as_posix()
 	if sources_only:
 		with TemporaryDirectory() as tmp:
 			build_epub(story, story_dir, Path(tmp), unpack_root=site)
-		write_print_sources(story, root / "print", PAPER_SIZES)
+		write_print_sources(
+			story, root / "print", PAPER_SIZES, stylesheet_href=stylesheet_href
+		)
 	else:
 		build_epub(story, story_dir, site, unpack_root=None)
 		write_pdfs(story, root / "print", story_dir.name, PAPER_SIZES)
@@ -173,17 +164,29 @@ def build_story(
 		download_root = (
 			Path("../../../../dist") / story_dir.parent.name / story_dir.name
 		)
-	page = write_story_page(story, story_dir, root / "web", download_root=download_root)
+	page = write_story_page(
+		story,
+		story_dir,
+		root / "web",
+		download_root=download_root,
+		stylesheet_href=stylesheet_href,
+	)
 	return story, page
 
 
 def write_story_page(
-	story: Story, story_dir: Path, output_dir: Path, *, download_root: Path
+	story: Story,
+	story_dir: Path,
+	output_dir: Path,
+	*,
+	download_root: Path,
+	stylesheet_href: str,
 ) -> Path:
 	cover = story_dir / "cover.png"
 	html = render_web_page(
 		story,
 		has_cover=cover.is_file(),
+		stylesheet_href=stylesheet_href,
 		epub_href=(download_root / "ebook" / f"{story_dir.name}.epub").as_posix(),
 		pdf_links=[
 			(
@@ -195,7 +198,6 @@ def write_story_page(
 	)
 	output_dir.mkdir(parents=True, exist_ok=True)
 
-	write_stylesheet(output_dir)
 	if cover.is_file():
 		shutil.copyfile(cover, output_dir / "cover.png")
 	else:
@@ -207,7 +209,10 @@ def write_story_page(
 	return output_file
 
 
-def write_stylesheet(output_dir: Path) -> None:
+def write_stylesheet(output_dir: Path) -> Path:
 	stylesheet = files("miskatron").joinpath("styles", "story.css")
 	css = format_publication_file(stylesheet.read_text(encoding="utf-8"), "story.css")
-	(output_dir / "story.css").write_text(css, encoding="utf-8")
+	output_dir.mkdir(parents=True, exist_ok=True)
+	path = output_dir / "story.css"
+	path.write_text(css, encoding="utf-8")
+	return path

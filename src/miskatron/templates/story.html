@@ -5,7 +5,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<title>{{ story.title }}</title>
 		<meta name="author" content="{{ story.author }}" />
-		<link rel="stylesheet" href="story.css" />
+		<link rel="stylesheet" href="{{ stylesheet_href }}" />
 		{% if print_page %}<link rel="stylesheet" href="print.css" media="print" />{% endif %}
 	</head>
 	<body>
