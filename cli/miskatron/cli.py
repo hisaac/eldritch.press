@@ -211,7 +211,7 @@ def write_story_page(
 
 
 def write_stylesheet(output_dir: Path) -> Path:
-	stylesheet = files("miskatron").joinpath("styles", "story.css")
+	stylesheet = files("miskatron.styles").joinpath("story.css")
 	css = format_publication_file(stylesheet.read_text(encoding="utf-8"), "story.css")
 	output_dir.mkdir(parents=True, exist_ok=True)
 	path = output_dir / "story.css"

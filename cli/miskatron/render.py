@@ -10,7 +10,7 @@ from mdit_py_plugins.attrs import attrs_block_plugin
 from miskatron.story import Story
 
 environment = Environment(
-	loader=PackageLoader("miskatron", "templates"),
+	loader=PackageLoader("miskatron.templates", "."),
 	autoescape=select_autoescape(("html", "xml", "xhtml")),
 	undefined=StrictUndefined,
 	keep_trailing_newline=True,

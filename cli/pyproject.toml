@@ -23,8 +23,20 @@ dependencies = [
 msk = "miskatron.cli:main"
 
 [build-system]
-requires = ["uv_build>=0.13.9,<0.14.0"]
-build-backend = "uv_build"
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["miskatron", "miskatron.templates", "miskatron.styles"]
+
+[tool.setuptools.package-dir]
+"miskatron.templates" = "templates"
+"miskatron.styles" = "styles"
+
+[tool.setuptools.package-data]
+miskatron = [".prettierrc.yaml"]
+"miskatron.templates" = ["*.html"]
+"miskatron.styles" = ["*.css"]
 
 [tool.ruff.lint]
 extend-select = ["I"]

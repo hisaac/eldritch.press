@@ -22,7 +22,7 @@ def write_print_sources(
 		"print.css",
 		*(f"{paper.lower()}.css" for paper in sizes),
 	):
-		style = files("miskatron").joinpath("styles", name)
+		style = files("miskatron.styles").joinpath(name)
 		(output / name).write_bytes(style.read_bytes())
 	page = output / "index.html"
 	page.write_text(
@@ -37,7 +37,7 @@ def write_pdfs(story: Story, output: Path, slug: str, sizes: tuple[str, ...]) ->
 	output.mkdir(parents=True, exist_ok=True)
 	with (
 		TemporaryDirectory() as tmp,
-		as_file(files("miskatron").joinpath("styles", "story.css")) as style,
+		as_file(files("miskatron.styles").joinpath("story.css")) as style,
 	):
 		page = write_print_sources(
 			story, Path(tmp), sizes, stylesheet_href=style.resolve().as_uri()

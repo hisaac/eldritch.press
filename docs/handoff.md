@@ -29,11 +29,11 @@ mise run check
 
 The build currently writes `index.html` and a copy of `story.css` under `generated/<author>/<story>/`, relative to the working directory. There is no EPUB or PDF generator yet. “The Tomb” and “The Quest of Iranon” are useful manual samples; “The Alchemist” is unfinished and contains legacy HTML and wrapped text.
 
-`Story.from_files()` in `cli/src/miskatron/story.py` reads UTF-8 Markdown and YAML using PyYAML's `safe_load`, validates metadata, and returns a dataclass. A non-mapping YAML document raises `TypeError`; missing/invalid fields raise `ValueError`. The year must be exactly an integer, excluding booleans.
+`Story.from_files()` in `cli/miskatron/story.py` reads UTF-8 Markdown and YAML using PyYAML's `safe_load`, validates metadata, and returns a dataclass. A non-mapping YAML document raises `TypeError`; missing/invalid fields raise `ValueError`. The year must be exactly an integer, excluding booleans.
 
 `render_html(story)` produces a fragment through markdown-it-py using CommonMark, raw HTML enabled, HTML output, and typography transformations disabled. `render_web_page(story)` wraps it with Jinja, then calls djLint's public `format_text` API using `load_config(".")`.
 
-Jinja uses `PackageLoader`, autoescaping, `StrictUndefined`, and a trailing newline. `templates/story.html` supplies document metadata and a `<main>` around the fragment; the fragment is marked `safe`. The template links to the packaged story stylesheet. The current raw-HTML-enabled parser differs from the earlier suggested disabled setting: do not silently change it, especially while unfinished sources contain HTML.
+Jinja uses `PackageLoader`, autoescaping, `StrictUndefined`, and a trailing newline. `cli/templates/story.html` supplies document metadata and a `<main>` around the fragment; the fragment is marked `safe`. The template links to the packaged story stylesheet. The current raw-HTML-enabled parser differs from the earlier suggested disabled setting: do not silently change it, especially while unfinished sources contain HTML.
 
 `cli/tests/test_story.py` contains nine parametrized test cases covering metadata, language defaults/overrides, missing title, invalid years, and source-text preservation. Fixtures are temporary fictional files: “The Sentient Teapot,” Professor Wobble, and Captain Noodle. They do not read or modify real stories.
 
@@ -55,6 +55,6 @@ After correctness checks, guide the user through a small browser stylesheet and 
 
 ## Verification
 
-During this documentation update, all nine loader tests passed, ty passed, and Ruff's formatting check passed. `mise run check` failed on Ruff I001 (import ordering) in `cli/src/miskatron/render.py`; implementation was left untouched. Remove the blank line between third-party imports and put a blank line before the local `miskatron.story` import, or apply Ruff's import fix when the user requests it.
+During this documentation update, all nine loader tests passed, ty passed, and Ruff's formatting check passed. `mise run check` failed on Ruff I001 (import ordering) in `cli/miskatron/render.py`; implementation was left untouched. Remove the blank line between third-party imports and put a blank line before the local `miskatron.story` import, or apply Ruff's import fix when the user requests it.
 
 These loader tests do not establish renderer correctness. No browser or EPUB validation was performed as part of this documentation update.

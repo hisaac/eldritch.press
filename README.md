@@ -64,7 +64,7 @@ The title page and publication note precede the story. Add an optional
 `editorial.md` beside `book.yaml` to extend the note, and `cover.png` for a
 library cover. The EPUB uses reader-default styling. Its identifier comes
 from the author and story directory names. The initial edition uses a fixed
-modification date in `cli/src/miskatron/epub.py` for reproducible builds.
+modification date in `cli/miskatron/epub.py` for reproducible builds.
 
 ## Building PDFs
 
@@ -74,7 +74,7 @@ and `fonts-dejavu-core` with APT. Installing missing packages may require sudo. 
 
 The distribution includes A4 and A5 PDFs with download links in the catalog and
 each story. WeasyPrint uses the story HTML and its stylesheet, with print rules
-in `cli/src/miskatron/styles/print.css` for pagination and margins. Pages are in
+in `cli/styles/print.css` for pagination and margins. Pages are in
 reading order. To generate only the A5 PDF under `.dist/<author>/<title>/print/`, run:
 
 ```sh

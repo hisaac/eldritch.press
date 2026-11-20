@@ -12,7 +12,7 @@ Miskatron publishes individual public-domain stories. Browser HTML is the curren
 
 - `stories/source/<author>/<story>/<story>.md`: authoritative story text.
 - `book.yaml` beside each story: title, author, integer publication year, and optional language (defaults to `en`).
-- `cli/src/miskatron/`: Python package; `cli.py` handles arguments and output, `story.py` loads metadata/text, and `render.py` renders HTML using `templates/story.html`.
+- `cli/miskatron/`: Python package; `cli.py` handles arguments and output, `story.py` loads metadata/text, and `render.py` renders HTML using `cli/templates/story.html`.
 - `cli/tests/`: pytest tests using fictional data and temporary files.
 - `stories/generated/`: tracked web, unpacked EPUB, and print sources for review.
 - `.dist/`: assembled website and downloadable EPUBs, deployed by GitHub Pages.
