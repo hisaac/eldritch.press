@@ -7,16 +7,11 @@ authors = [
 ]
 requires-python = ">=3.15"
 dependencies = [
-    "djlint>=1.54.0",
-    "ebooklib>=0.21",
     "jinja2>=3.1.6",
-    "markdown-it-py>=4.3.0",
-    "mdit-py-plugins>=0.7.0",
+    "pypandoc>=1.17",
     "pyyaml>=6.0.3",
     "regex>=2026.11.19",
     "smartypants>=2.0.2",
-    "utidylib>=1.1.0",
-    "weasyprint>=70,<71",
 ]
 
 [project.scripts]
@@ -35,7 +30,7 @@ packages = ["miskatron", "miskatron.templates", "miskatron.styles"]
 
 [tool.setuptools.package-data]
 miskatron = [".prettierrc.yaml"]
-"miskatron.templates" = ["*.html"]
+"miskatron.templates" = ["*.html", "*.typst"]
 "miskatron.styles" = ["*.css"]
 
 [tool.ruff.lint]

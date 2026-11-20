@@ -34,18 +34,18 @@ def test_epub_build(tmp_path, monkeypatch):
 	main()
 	assert contents() == expected
 	ns = {"h": "http://www.w3.org/1999/xhtml", "e": "http://www.idpf.org/2007/ops"}
-	body = ET.parse(root / "EPUB/story.xhtml")
+	body = ET.parse(root / "EPUB/text/ch002.xhtml")
 	assert body.getroot().get("lang") == "fr"
 	assert [el.text for el in body.findall(".//h:h1", ns)] == ["Night & Day"]
 	line = body.find(".//h:blockquote/h:p", ns)
 	assert line is not None and line.text == "Voilà!"
 	assert line[0].tag.endswith("}br") and line[0].tail == "\nAprès."
 	assert "Before dawn, again." in "".join(body.getroot().itertext())
-	front = ET.parse(root / "EPUB/editorial.xhtml")
+	front = ET.parse(root / "EPUB/text/ch001.xhtml")
 	assert front.findtext(".//h:em", namespaces=ns) == "edition"
 	nav = ET.parse(root / "EPUB/nav.xhtml")
 	target = nav.find(".//h:a[@e:type='bodymatter']", ns)
-	assert target is not None and target.get("href") == "story.xhtml"
+	assert target is not None and target.get("href") == "text/ch002.xhtml#story"
 	opf = ET.parse(root / "EPUB/content.opf")
 	items = {
 		item.get("id"): item.get("href")
@@ -53,4 +53,4 @@ def test_epub_build(tmp_path, monkeypatch):
 	}
 	assert [
 		items[ref.get("idref")] for ref in opf.findall(".//{*}spine/{*}itemref")
-	] == ["title.xhtml", "editorial.xhtml", "story.xhtml"]
+	] == ["text/title_page.xhtml", "text/ch001.xhtml", "text/ch002.xhtml"]

@@ -2,7 +2,7 @@
 
 ## Current publishing layout
 
-Run `mise run build` to generate the tracked web, ebook, and print sources from `stories/source/` into `stories/generated/`. Run `mise run dist` to assemble the website and EPUB/PDF downloads in `.dist/`. GitHub Pages deploys that directory. Both commands stage work in Python’s default temporary directory. Git ignores `.dist/`. The notes below describe the earlier HTML milestone.
+Run `mise run build` to generate the tracked web, ebook, and print sources from `stories/source/` into `stories/generated/`. Run `mise run dist` to assemble the website and EPUB/PDF downloads in `.dist/`. GitHub Pages deploys that directory. Both commands stage work in Python’s default temporary directory. Git ignores `.dist/`. Pandoc converts the story Markdown to HTML and writes EPUB 3 and Typst. Typst compiles the tracked print source into A4 and A5 PDFs. The notes below describe the earlier HTML milestone.
 
 ## Working With the User
 

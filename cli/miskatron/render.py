@@ -1,11 +1,10 @@
 import subprocess
 from pathlib import Path
 
+import pypandoc
 import regex
 import smartypants
 from jinja2 import Environment, PackageLoader, StrictUndefined, select_autoescape
-from markdown_it.main import MarkdownIt
-from mdit_py_plugins.attrs import attrs_block_plugin
 
 from miskatron.story import Story
 
@@ -23,7 +22,6 @@ def render_web_page(
 	stylesheet_href: str = "story.css",
 	epub_href: str = "",
 	pdf_links: list[tuple[str, str]] | None = None,
-	print_page: bool = False,
 	has_cover: bool = False,
 ) -> str:
 	template = environment.get_template("story.html")
@@ -33,7 +31,6 @@ def render_web_page(
 		has_cover=has_cover,
 		epub_href=epub_href,
 		pdf_links=pdf_links or [],
-		print_page=print_page,
 		content=render_html(story),
 	)
 
@@ -64,16 +61,9 @@ def render_html(story: Story) -> str:
 
 
 def render_markdown(text: str) -> str:
-	parser = MarkdownIt(
-		"commonmark",
-		{
-			"html": True,
-			"xhtmlOut": False,
-			"typographer": False,
-		},
+	fragment = pypandoc.convert_text(
+		text, format="commonmark+attributes", to="html5", extra_args=["--wrap=none"]
 	)
-	parser.use(attrs_block_plugin, allowed=["class"])
-	fragment = parser.render(text)
 	fragment = format_em_dashes(fragment)
 	fragment = format_ellipses(fragment)
 	fragment = format_quotes(fragment)

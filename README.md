@@ -18,7 +18,7 @@ Run the commands below from the repository root.
 
 ## Python development
 
-Run `mise run sync` (alias for `mise run bootstrap`) to install the PDF rendering dependencies and sync the uv environment. Mise installs the Pango formula on Apple Silicon Macs and uses APT on Debian and Ubuntu, including the GitHub Pages runner.
+Run `mise install` to install Pandoc, Typst, and the project tools, then `mise deps install` to sync the Python environment.
 
 - `mise run check` runs Ruff lint, formatting checks, ty type checking, and tests.
 - `mise run test` runs the pytest suite.
@@ -37,9 +37,9 @@ site build replaces `stories/generated/` with the selected stories. Omitting the
 
 Each story has three directories under `<author>/<title>/`. In `stories/generated/`,
 `web/` contains the browser page and assets, `ebook/` contains the unpacked EPUB,
-and `print/` contains the print HTML and A4/A5 stylesheets.
+and `print/story.typ` is the Typst source for both PDF sizes.
 For example, from a story's `stories/generated/.../print/` directory, run
-`weasyprint --stylesheet a5.css index.html sample.pdf` to render the A5 edition.
+`typst compile --input paper=a5 story.typ sample.pdf` to render the A5 edition.
 In `.dist/`, the web page links to the packaged EPUB in `ebook/` and PDFs in `print/`.
 
 Run `mise run build` to preview the complete site at `stories/generated/index.html` and inspect the unpacked EPUBs.
@@ -62,20 +62,19 @@ replaces that directory. Make corrections in the sources or generator.
 
 The title page and publication note precede the story. Add an optional
 `editorial.md` beside `book.yaml` to extend the note, and `cover.png` for a
-library cover. The EPUB uses reader-default styling. Its identifier comes
+library cover. Pandoc packages the EPUB with a minimal `cli/styles/ebook.css` so readers control the typography. Its identifier comes
 from the author and story directory names. The initial edition uses a fixed
 modification date in `cli/miskatron/epub.py` for reproducible builds.
 
 ## Building PDFs
 
-On Apple Silicon, the Mise environment uses Homebrew’s library directory so WeasyPrint can load Pango.
-On Debian and Ubuntu, sync installs `libpango-1.0-0`, `libpangoft2-1.0-0`, `libharfbuzz-subset0`,
-and `fonts-dejavu-core` with APT. Installing missing packages may require sudo. uv installs the WeasyPrint Python package.
+Pandoc reads the story Markdown and writes the browser HTML fragment. Miskatron
+shares the typographically formatted fragment with the EPUB and Typst writers.
+Jinja supplies the browser page and catalog layout. Browser printing uses
+`cli/styles/story.css`; downloadable PDFs use `cli/templates/story.typst`,
+with 17 mm margins and numbered pages in reading order.
 
-The distribution includes A4 and A5 PDFs with download links in the catalog and
-each story. WeasyPrint uses the story HTML and its stylesheet, with print rules
-in `cli/styles/story.css` for pagination and margins. Pages are in
-reading order. To generate only the A5 PDF under `.dist/<author>/<title>/print/`, run:
+To generate only the A5 PDF under `.dist/<author>/<title>/print/`, run:
 
 ```sh
 mise exec -- msk build --format pdf --paper A5 stories/source/lovecraft-h-p/the-tomb/

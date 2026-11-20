@@ -8,7 +8,7 @@ Read [the handoff](docs/handoff.md) for current status and [the publishing desig
 
 ## Project Structure
 
-Miskatron publishes individual public-domain stories. Browser HTML is the current milestone; EPUB and printable zine PDFs follow. Collections are out of scope.
+Miskatron publishes individual public-domain stories. Pandoc produces HTML, EPUB, and Typst source. Typst compiles A4 and A5 PDFs. Collections are out of scope.
 
 - `stories/source/<author>/<story>/<story>.md`: authoritative story text.
 - `book.yaml` beside each story: title, author, integer publication year, and optional language (defaults to `en`).
@@ -22,7 +22,7 @@ Miskatron publishes individual public-domain stories. Browser HTML is the curren
 
 Mise reads Python from `.python-version`; uv manages dependencies, `.venv`, and `cli/uv.lock`. The installed command is **`msk`**, despite older references to `misk`.
 
-- `mise run sync`: install project and dependencies.
+- `mise install` and `mise deps install`: install project tools and Python dependencies.
 - `mise run check`: lint, formatting, type checks, and tests.
 - `mise run test`: pytest.
 - `mise run format`: format Mise configuration and Python.

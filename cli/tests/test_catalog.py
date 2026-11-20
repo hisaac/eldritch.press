@@ -19,9 +19,12 @@ def test_catalog_links_to_built_stories(tmp_path, monkeypatch):
 
 	build_all()
 	assert not Path(".dist").exists()
-	assert Path("stories/generated/writer/first/ebook/EPUB/story.xhtml").is_file()
-	assert Path("stories/generated/writer/first/print/index.html").is_file()
-	assert Path("stories/generated/writer/first/print/a5.css").is_file()
+	assert Path("stories/generated/writer/first/ebook/EPUB/text/ch002.xhtml").is_file()
+	assert Path("stories/generated/writer/first/print/story.typ").is_file()
+	assert (
+		"Story text."
+		in Path("stories/generated/writer/first/print/story.typ").read_text()
+	)
 	assert not list(Path("stories/generated").rglob("*.epub"))
 	assert not list(Path("stories/generated").rglob("*.pdf"))
 	build_all(Path(".dist"))

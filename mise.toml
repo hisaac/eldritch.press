@@ -6,13 +6,9 @@ idiomatic_version_file_enable_tools = ["python"]
 [settings.python]
 uv_venv_auto = false
 
-[bootstrap.packages]
-"brew:pango" = { os = "macos" }
-"apt:libpango-1.0-0" = { os = "linux" }
-"apt:libpangoft2-1.0-0" = { os = "linux" }
-"apt:libharfbuzz-subset0" = { os = "linux" }
-
 [tools]
+pandoc = "3.14"
+typst = "0.15.1"
 prettier = "latest"
 ruff = "latest"
 ty = "latest"
@@ -20,7 +16,6 @@ uv = "latest"
 
 [env]
 _.path = ["cli/.venv/bin"]
-DYLD_FALLBACK_LIBRARY_PATH = "/opt/homebrew/lib{% if env.DYLD_FALLBACK_LIBRARY_PATH %}:{{ env.DYLD_FALLBACK_LIBRARY_PATH }}{% endif %}"
 
 [deps.uv]
 auto = true
@@ -49,7 +44,7 @@ run = ["mise fmt", "ruff format ."]
 run = ["mise fmt --check", "ruff check .", "ruff format --check ."]
 
 [tasks.typecheck]
-run = "ty check --project cli"
+run = "ty check --project cli --python cli/.venv"
 
 [tasks.test]
 description = "Run the Python tests"

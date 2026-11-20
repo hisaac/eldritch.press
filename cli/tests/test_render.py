@@ -7,7 +7,7 @@ def test_smart_punctuation_in_prose_preserves_inline_code():
 	story = Story("Evening", "A. Writer", 1900, "en", text)
 
 	assert render_html(story) == (
-		"<p>“Don’t wait…” she said—then typed <code>&quot;wait...&quot;</code>.</p>\n"
+		'<p>“Don’t wait…” she said—then typed <code>"wait..."</code>.</p>\n'
 	)
 
 
@@ -27,6 +27,6 @@ def test_poetry_class_applies_to_the_whole_quote():
 	)
 	assert render_markdown(text) == (
 		"<blockquote>\n<p>Epigraph.</p>\n</blockquote>\n"
-		'<blockquote class="poetry">\n<p>First line.<br>\nSecond line.</p>\n'
+		'<blockquote class="poetry">\n<p>First line.<br />\nSecond line.</p>\n'
 		"<p>Next stanza.</p>\n</blockquote>\n"
 	)

@@ -1,5 +1,6 @@
 import argparse
 import shutil
+import subprocess
 from importlib.resources import files
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -7,7 +8,7 @@ from tempfile import TemporaryDirectory
 import yaml
 
 from miskatron.epub import build_epub
-from miskatron.pdf import PAPER_SIZES, pdf_name, write_pdfs, write_print_sources
+from miskatron.pdf import PAPER_SIZES, pdf_name, write_pdfs, write_print_source
 from miskatron.render import environment, format_publication_file, render_web_page
 from miskatron.story import Story
 
@@ -55,7 +56,14 @@ def main() -> None:
 					)
 			else:
 				build_site(folders, Path("stories/generated"))
-	except (OSError, ValueError, TypeError, yaml.YAMLError) as error:
+	except (
+		OSError,
+		ValueError,
+		TypeError,
+		subprocess.CalledProcessError,
+		RuntimeError,
+		yaml.YAMLError,
+	) as error:
 		parser.error(str(error))
 
 
@@ -154,9 +162,7 @@ def build_story(
 	if sources_only:
 		with TemporaryDirectory() as tmp:
 			build_epub(story, story_dir, Path(tmp), unpack_root=site)
-		write_print_sources(
-			story, root / "print", PAPER_SIZES, stylesheet_href=stylesheet_href
-		)
+		write_print_source(story, root / "print")
 	else:
 		build_epub(story, story_dir, site, unpack_root=None)
 		write_pdfs(story, root / "print", story_dir.name, PAPER_SIZES)
