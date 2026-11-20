@@ -20,7 +20,7 @@ def main() -> None:
 		"build", help="Build stories found recursively under a directory"
 	)
 	build_parser.add_argument(
-		"directory", type=Path, nargs="?", default=Path("src/stories")
+		"directory", type=Path, nargs="?", default=Path("stories/source")
 	)
 	build_parser.add_argument(
 		"--format", choices=("html", "epub", "pdf"), default="html"
@@ -37,7 +37,7 @@ def main() -> None:
 	args = parser.parse_args()
 	try:
 		if args.command == "dist":
-			build_all(Path("dist"))
+			build_all(Path(".dist"))
 		else:
 			if args.paper and args.format != "pdf":
 				parser.error("--paper requires --format pdf")
@@ -49,12 +49,12 @@ def main() -> None:
 				for folder in folders:
 					write_pdfs(
 						load_story(folder),
-						Path("dist") / folder.parent.name / folder.name / "print",
+						Path(".dist") / folder.parent.name / folder.name / "print",
 						folder.name,
 						(args.paper,) if args.paper else PAPER_SIZES,
 					)
 			else:
-				build_site(folders, Path("editions"))
+				build_site(folders, Path("stories/generated"))
 	except (OSError, ValueError, TypeError, yaml.YAMLError) as error:
 		parser.error(str(error))
 
@@ -76,8 +76,8 @@ def discover_stories(directory: Path) -> list[Path]:
 	return folders
 
 
-def build_all(output: Path = Path("editions")) -> None:
-	build_site(discover_stories(Path("src/stories")), output)
+def build_all(output: Path = Path("stories/generated")) -> None:
+	build_site(discover_stories(Path("stories/source")), output)
 
 
 def build_site(folders: list[Path], output: Path) -> None:
@@ -88,7 +88,8 @@ def build_site(folders: list[Path], output: Path) -> None:
 	with TemporaryDirectory() as tmp:
 		site = Path(tmp) / "site"
 		site.mkdir()
-		assemble_site(site, folders, sources_only=output == Path("editions"))
+		assemble_site(site, folders, sources_only=output == Path("stories/generated"))
+		output.parent.mkdir(parents=True, exist_ok=True)
 		previous = Path(tmp) / "previous"
 		if output.exists():
 			output.move(previous)
@@ -135,7 +136,7 @@ def load_story(story_dir: Path) -> Story:
 
 def build_story(
 	story_dir: Path,
-	site: Path = Path("dist"),
+	site: Path = Path(".dist"),
 	*,
 	sources_only: bool = False,
 	stylesheet: Path | None = None,
@@ -162,7 +163,7 @@ def build_story(
 	download_root = Path("..")
 	if sources_only:
 		download_root = (
-			Path("../../../../dist") / story_dir.parent.name / story_dir.name
+			Path("../../../../../.dist") / story_dir.parent.name / story_dir.name
 		)
 	page = write_story_page(
 		story,

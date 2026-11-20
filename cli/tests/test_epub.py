@@ -7,7 +7,7 @@ from miskatron.cli import main
 
 def test_epub_build(tmp_path, monkeypatch):
 	monkeypatch.chdir(tmp_path)
-	folder = Path("src/stories/writer/evening")
+	folder = Path("stories/source/writer/evening")
 	folder.mkdir(parents=True)
 	(folder / "book.yaml").write_text(
 		"title: Night & Day\nauthor: A. Writer\npublished: 1900\nlanguage: fr\n"
@@ -17,8 +17,8 @@ def test_epub_build(tmp_path, monkeypatch):
 	monkeypatch.setattr("sys.argv", ["msk", "build", "--format", "epub", str(folder)])
 	main()
 
-	root = Path("editions/writer/evening/ebook")
-	archive = Path("dist/writer/evening/ebook/evening.epub")
+	root = Path("stories/generated/writer/evening/ebook")
+	archive = Path(".dist/writer/evening/ebook/evening.epub")
 	with ZipFile(archive) as package:
 		expected = {name: package.read(name) for name in package.namelist()}
 

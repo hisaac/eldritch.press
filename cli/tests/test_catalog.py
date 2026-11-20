@@ -10,7 +10,7 @@ def test_catalog_links_to_built_stories(tmp_path, monkeypatch):
 		("Writer", "second", "Apple"),
 		("Poet", "third", "Moon"),
 	]:
-		folder = Path("src/stories") / author.lower() / slug
+		folder = Path("stories/source") / author.lower() / slug
 		folder.mkdir(parents=True)
 		(folder / "book.yaml").write_text(
 			f"title: {title}\nauthor: {author}\npublished: 1900\n"
@@ -18,23 +18,23 @@ def test_catalog_links_to_built_stories(tmp_path, monkeypatch):
 		(folder / f"{slug}.md").write_text("Story text.")
 
 	build_all()
-	assert not Path("dist").exists()
-	assert Path("editions/writer/first/ebook/EPUB/story.xhtml").is_file()
-	assert Path("editions/writer/first/print/index.html").is_file()
-	assert Path("editions/writer/first/print/a5.css").is_file()
-	assert not list(Path("editions").rglob("*.epub"))
-	assert not list(Path("editions").rglob("*.pdf"))
-	build_all(Path("dist"))
-	assert not Path("build").exists()
-	preview_index = Path("editions/index.html").read_text()
+	assert not Path(".dist").exists()
+	assert Path("stories/generated/writer/first/ebook/EPUB/story.xhtml").is_file()
+	assert Path("stories/generated/writer/first/print/index.html").is_file()
+	assert Path("stories/generated/writer/first/print/a5.css").is_file()
+	assert not list(Path("stories/generated").rglob("*.epub"))
+	assert not list(Path("stories/generated").rglob("*.pdf"))
+	build_all(Path(".dist"))
+	assert not Path(".build").exists()
+	preview_index = Path("stories/generated/index.html").read_text()
 
-	output = Path("dist")
+	output = Path(".dist")
 	index = (output / "index.html").read_text()
 	for catalog in (preview_index, index):
 		assert '.epub"' not in catalog
 		assert '.pdf"' not in catalog
 	assert 'href="story.css"' in index
-	for root in (Path("editions"), output):
+	for root in (Path("stories/generated"), output):
 		assert list(root.rglob("story.css")) == [root / "story.css"]
 		for page in root.glob("*/*/*/index.html"):
 			assert 'href="../../../story.css"' in page.read_text()
@@ -51,13 +51,13 @@ def test_catalog_links_to_built_stories(tmp_path, monkeypatch):
 		href = f"writer/{slug}/web/index.html"
 		locations.append(writer.index(f'<a href="{href}">{title}</a>'))
 		page = (output / href).read_text()
-		preview = (Path("editions") / href).read_text()
+		preview = (Path("stories/generated") / href).read_text()
 		for asset in (
 			f"ebook/{slug}.epub",
 			f"print/{slug}-a4.pdf",
 			f"print/{slug}-a5.pdf",
 		):
-			assert f'href="../../../../dist/writer/{slug}/{asset}"' in preview
+			assert f'href="../../../../../.dist/writer/{slug}/{asset}"' in preview
 		assert page.index('href="../../../index.html"') < page.index(
 			f"<h1>{title}</h1>"
 		)
@@ -79,7 +79,7 @@ def test_story_cover_is_copied_and_removed_when_source_is_removed(
 	tmp_path, monkeypatch
 ):
 	monkeypatch.chdir(tmp_path)
-	folder = Path("src/stories/writer/evening")
+	folder = Path("stories/source/writer/evening")
 	folder.mkdir(parents=True)
 	(folder / "book.yaml").write_text(
 		"title: Evening\nauthor: A. Writer\npublished: 1900\n"
@@ -118,8 +118,9 @@ def test_build_directory_recursively(tmp_path, monkeypatch):
 		main()
 		assert (
 			sorted(
-				p.parent.parent.name for p in Path("editions").rglob("ebook/mimetype")
+				p.parent.parent.name
+				for p in Path("stories/generated").rglob("ebook/mimetype")
 			)
 			== titles
 		)
-		assert not Path("dist").exists()
+		assert not Path(".dist").exists()

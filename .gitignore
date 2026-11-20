@@ -10,8 +10,8 @@
 __pycache__/
 
 # Temporary build files and generated distribution files
-/build/
-/dist/
+/.build/
+/.dist/
 
 # Test coverage
 .coverage

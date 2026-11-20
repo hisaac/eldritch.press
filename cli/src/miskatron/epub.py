@@ -22,9 +22,9 @@ def page(filename: str, title: str, body: str) -> epub.EpubHtml:
 def build_epub(
 	story: Story,
 	folder: Path,
-	site: Path = Path("dist"),
+	site: Path = Path(".dist"),
 	*,
-	unpack_root: Path | None = Path("editions"),
+	unpack_root: Path | None = Path("stories/generated"),
 ) -> Path:
 	key = Path(folder.parent.name) / folder.name
 	book = epub.EpubBook()

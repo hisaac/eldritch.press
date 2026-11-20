@@ -4,7 +4,7 @@ experimental = true
 idiomatic_version_file_enable_tools = ["python"]
 
 [settings.python]
-uv_venv_auto = "source"
+uv_venv_auto = false
 
 [bootstrap.packages]
 "brew:pango" = { os = "macos" }
@@ -19,21 +19,23 @@ ty = "latest"
 uv = "latest"
 
 [env]
+_.path = ["cli/.venv/bin"]
 DYLD_FALLBACK_LIBRARY_PATH = "/opt/homebrew/lib{% if env.DYLD_FALLBACK_LIBRARY_PATH %}:{{ env.DYLD_FALLBACK_LIBRARY_PATH }}{% endif %}"
 
 [deps.uv]
 auto = true
+dir = "cli"
 
 [hooks]
 postinstall = "mise deps install"
 
 [tasks.build]
 description = "Build all stories and their index"
-run = "uv run msk build ./src/stories/"
+run = "msk build"
 
 [tasks.dist]
-description = "Build the distribution website and EPUBs in dist/"
-run = "uv run msk dist"
+description = "Build the distribution website and EPUBs in .dist/"
+run = "msk dist"
 
 [tasks.check]
 alias = "chk"
@@ -41,28 +43,27 @@ depends = ["lint", "typecheck", "test"]
 
 [tasks.fix]
 alias = "format"
-run = ["mise fmt", "uv run ruff format ."]
+run = ["mise fmt", "ruff format ."]
 
 [tasks.lint]
-run = [
-  "mise fmt --check",
-  "uv run ruff check .",
-  "uv run ruff format --check .",
-]
+run = ["mise fmt --check", "ruff check .", "ruff format --check ."]
 
 [tasks.typecheck]
-run = "uv run ty check"
+run = "ty check --project cli"
 
 [tasks.test]
 description = "Run the Python tests"
-run = "uv run pytest"
+run = "pytest cli/tests"
 
 [tasks.run]
-run = "uv run msk"
+run = "msk"
 
 [tasks.clean]
 description = "Remove generated EPUBs, build output, and coverage reports"
-run = ["rm -rf build dist htmlcov", "rm -f .coverage .coverage.* coverage.xml"]
+run = [
+  "rm -rf .build .dist htmlcov",
+  "rm -f .coverage .coverage.* coverage.xml",
+]
 
 [tasks.nuke]
 description = "Clean generated output and delete all Git-ignored files (including .env)"

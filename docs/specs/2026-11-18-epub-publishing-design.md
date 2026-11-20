@@ -30,6 +30,8 @@ Use Mise for tool management, continuing the existing `mise.toml` convention, an
 
 ## Proposed Repository Layout
 
+This section records the original proposal. See the [README](../../README.md) for the current repository layout and commands.
+
 Story sources have moved to `src/stories/`. The following layout describes the intended publishing structure; `build.py`, editorial files, and EPUB packaging are not implemented yet:
 
 ```text
