@@ -8,7 +8,7 @@ for the agreed direction.
 
 ## Python development
 
-Run `mise run bootstrap` to sync the uv environment and development dependencies.
+Run `mise run sync` (alias for `mise run bootstrap`) to install the PDF rendering dependencies and sync the uv environment. Mise installs the Pango formula on Apple Silicon Macs and uses APT on Debian and Ubuntu, including the GitHub Pages runner.
 
 - `mise run check` runs Ruff lint, formatting checks, ty type checking, and tests.
 - `mise run test` runs the pytest suite.
@@ -58,9 +58,9 @@ modification date in `src/miskatron/epub.py` for reproducible builds.
 
 ## Building PDFs
 
-Install Pango before running the site build or tests (`brew install pango` on macOS).
-On Ubuntu, install `libpango-1.0-0`, `libpangoft2-1.0-0`, `libharfbuzz-subset0`,
-and `fonts-dejavu-core`. uv installs the WeasyPrint Python package.
+On Apple Silicon, the Mise environment uses Homebrew’s library directory so WeasyPrint can load Pango.
+On Debian and Ubuntu, sync installs `libpango-1.0-0`, `libpangoft2-1.0-0`, `libharfbuzz-subset0`,
+and `fonts-dejavu-core` with APT. Installing missing packages may require sudo. uv installs the WeasyPrint Python package.
 
 The distribution includes A4 and A5 PDFs with download links in the catalog and
 each story. WeasyPrint uses the story HTML and its stylesheet, with print rules
