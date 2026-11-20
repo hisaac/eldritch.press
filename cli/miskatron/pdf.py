@@ -18,10 +18,8 @@ def write_print_sources(
 	story: Story, output: Path, sizes: tuple[str, ...], *, stylesheet_href: str
 ) -> Path:
 	output.mkdir(parents=True, exist_ok=True)
-	for name in (
-		"print.css",
-		*(f"{paper.lower()}.css" for paper in sizes),
-	):
+	for paper in sizes:
+		name = f"{paper.lower()}.css"
 		style = files("miskatron.styles").joinpath(name)
 		(output / name).write_bytes(style.read_bytes())
 	page = output / "index.html"

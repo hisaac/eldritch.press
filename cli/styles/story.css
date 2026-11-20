@@ -51,3 +51,42 @@ main p + p:not(.poetry p) {
 		color: #d2b3ff;
 	}
 }
+
+@media print {
+	@page {
+		margin: 17mm;
+		@bottom-center {
+			content: counter(page);
+			font-size: 9pt;
+		}
+	}
+
+	body {
+		line-height: 1.2;
+	}
+
+	main {
+		margin-block: 0 !important;
+	}
+
+	main > nav,
+	header p:has(a[download]),
+	header .cover {
+		display: none !important;
+	}
+
+	blockquote {
+		margin-inline: 1em;
+	}
+
+	header,
+	blockquote:not(.poetry),
+	blockquote.poetry > p {
+		break-inside: avoid;
+	}
+
+	p {
+		orphans: 2;
+		widows: 2;
+	}
+}

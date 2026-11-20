@@ -37,7 +37,7 @@ site build replaces `stories/generated/` with the selected stories. Omitting the
 
 Each story has three directories under `<author>/<title>/`. In `stories/generated/`,
 `web/` contains the browser page and assets, `ebook/` contains the unpacked EPUB,
-and `print/` contains the print HTML, shared styles, and A4/A5 stylesheets.
+and `print/` contains the print HTML and A4/A5 stylesheets.
 For example, from a story's `stories/generated/.../print/` directory, run
 `weasyprint --stylesheet a5.css index.html sample.pdf` to render the A5 edition.
 In `.dist/`, the web page links to the packaged EPUB in `ebook/` and PDFs in `print/`.
@@ -74,7 +74,7 @@ and `fonts-dejavu-core` with APT. Installing missing packages may require sudo. 
 
 The distribution includes A4 and A5 PDFs with download links in the catalog and
 each story. WeasyPrint uses the story HTML and its stylesheet, with print rules
-in `cli/styles/print.css` for pagination and margins. Pages are in
+in `cli/styles/story.css` for pagination and margins. Pages are in
 reading order. To generate only the A5 PDF under `.dist/<author>/<title>/print/`, run:
 
 ```sh
