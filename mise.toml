@@ -1,6 +1,17 @@
 [settings]
+activate_aggressive = true
+experimental = true
 idiomatic_version_file_enable_tools = ["python"]
-python.uv_venv_auto = "source"
+
+[settings.python]
+uv_venv_auto = "source"
+
+[bootstrap.packages]
+"brew:pango" = { os = "macos" }
+"apt:libpango-1.0-0" = { os = "linux" }
+"apt:libpangoft2-1.0-0" = { os = "linux" }
+"apt:libharfbuzz-subset0" = { os = "linux" }
+"apt:fonts-dejavu-cor" = { os = "linux" }
 
 [tools]
 prettier = "latest"
@@ -8,27 +19,14 @@ ruff = "latest"
 ty = "latest"
 uv = "latest"
 
-[bootstrap.packages]
-"brew:pango" = { os = "macos" }
-
 [env]
-DYLD_FALLBACK_LIBRARY_PATH = "{% if os() == 'macos' %}/opt/homebrew/lib{% if env.DYLD_FALLBACK_LIBRARY_PATH %}:{% endif %}{% endif %}{{ env.DYLD_FALLBACK_LIBRARY_PATH | default(value='') }}"
-UV_PYTHON = { value = "{{ tools.python.path }}", tools = true }
+DYLD_FALLBACK_LIBRARY_PATH = "/opt/homebrew/lib{% if env.DYLD_FALLBACK_LIBRARY_PATH %}:{{ env.DYLD_FALLBACK_LIBRARY_PATH }}{% endif %}"
+
+[deps.uv]
+auto = true
 
 [hooks]
-postinstall = "mise run sync"
-
-[tasks.bootstrap]
-alias = "sync"
-run = [
-  """
-case "$(uname -s)" in
-  Darwin) mise bootstrap packages apply --yes brew:pango ;;
-  Linux) mise bootstrap packages apply --yes apt:libpango-1.0-0 apt:libpangoft2-1.0-0 apt:libharfbuzz-subset0 apt:fonts-dejavu-core ;;
-esac
-""",
-  "uv sync",
-]
+postinstall = "mise deps install"
 
 [tasks.build]
 description = "Build all stories and their index"
