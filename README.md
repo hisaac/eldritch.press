@@ -64,7 +64,7 @@ The title page and publication note precede the story. Add an optional
 `editorial.md` beside `book.yaml` to extend the note, and `cover.png` for a
 library cover. Pandoc packages the EPUB with a minimal `cli/styles/ebook.css` so readers control the typography. Its identifier comes
 from the author and story directory names. The initial edition uses a fixed
-modification date in `cli/miskatron/epub.py` for reproducible builds.
+modification date in `cli/miskatron/formats/epub.py` for reproducible builds.
 
 ## Building PDFs
 

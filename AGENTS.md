@@ -12,7 +12,7 @@ Miskatron publishes individual public-domain stories. Pandoc produces HTML, EPUB
 
 - `stories/source/<author>/<story>/<story>.md`: authoritative story text.
 - `book.yaml` beside each story: title, author, integer publication year, and optional language (defaults to `en`).
-- `cli/miskatron/`: Python package; `cli.py` handles arguments and output, `story.py` loads metadata/text, and `render.py` renders HTML using `cli/templates/story.html`.
+- `cli/miskatron/`: Python package. `cli.py` registers subcommands and handles exit status, `commands/` defines each subcommand’s arguments and handler, `publish.py` coordinates publication, and `story.py` discovers and loads sources. The `formats/` package contains `web.py`, `epub.py`, and `pdf.py` for the three editions. `render.py` owns Pandoc conversions.
 - `cli/tests/`: pytest tests using fictional data and temporary files.
 - `stories/generated/`: tracked web, unpacked EPUB, and print sources for review.
 - `.dist/`: assembled website and downloadable EPUBs, deployed by GitHub Pages.

@@ -21,8 +21,6 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - uses: jdx/mise-action@v5
-        with:
-          bootstrap: true
       - run: mise run dist
       - uses: actions/configure-pages@v6
       - uses: actions/upload-pages-artifact@v5

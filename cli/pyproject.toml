@@ -10,8 +10,6 @@ dependencies = [
     "jinja2>=3.1.6",
     "pypandoc>=1.17",
     "pyyaml>=6.0.3",
-    "regex>=2026.11.19",
-    "smartypants>=2.0.2",
 ]
 
 [project.scripts]
@@ -22,14 +20,14 @@ requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-packages = ["miskatron", "miskatron.templates", "miskatron.styles"]
+packages = ["miskatron", "miskatron.commands", "miskatron.formats", "miskatron.templates", "miskatron.styles"]
 
 [tool.setuptools.package-dir]
 "miskatron.templates" = "templates"
 "miskatron.styles" = "styles"
 
 [tool.setuptools.package-data]
-miskatron = [".prettierrc.yaml"]
+"miskatron.formats" = [".prettierrc.yaml"]
 "miskatron.templates" = ["*.html", "*.typst"]
 "miskatron.styles" = ["*.css"]
 

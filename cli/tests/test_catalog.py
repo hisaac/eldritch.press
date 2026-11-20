@@ -1,9 +1,13 @@
+"""Exercise preview and distribution builds with temporary story libraries."""
+
 from pathlib import Path
 
-from miskatron.cli import build_all, build_story, main
+from miskatron import cli, publish
 
 
 def test_catalog_links_to_built_stories(tmp_path, monkeypatch):
+	"""Follow the catalog links and check the preview sources and distribution downloads."""
+
 	monkeypatch.chdir(tmp_path)
 	for author, slug, title in [
 		("Writer", "first", "Zebra"),
@@ -17,7 +21,8 @@ def test_catalog_links_to_built_stories(tmp_path, monkeypatch):
 		)
 		(folder / f"{slug}.md").write_text("Story text.")
 
-	build_all()
+	monkeypatch.setattr("sys.argv", ["msk", "build"])
+	cli.main()
 	assert not Path(".dist").exists()
 	assert Path("stories/generated/writer/first/ebook/EPUB/text/ch002.xhtml").is_file()
 	assert Path("stories/generated/writer/first/print/story.typ").is_file()
@@ -27,7 +32,9 @@ def test_catalog_links_to_built_stories(tmp_path, monkeypatch):
 	)
 	assert not list(Path("stories/generated").rglob("*.epub"))
 	assert not list(Path("stories/generated").rglob("*.pdf"))
-	build_all(Path(".dist"))
+
+	monkeypatch.setattr("sys.argv", ["msk", "dist"])
+	cli.main()
 	assert not Path(".build").exists()
 	preview_index = Path("stories/generated/index.html").read_text()
 
@@ -42,6 +49,7 @@ def test_catalog_links_to_built_stories(tmp_path, monkeypatch):
 		for page in root.glob("*/*/*/index.html"):
 			assert 'href="../../../story.css"' in page.read_text()
 			assert (page.parent / "../../../story.css").samefile(root / "story.css")
+
 	assert index.count("<h2>Writer</h2>") == 1
 	poet, writer = index.split("<h2>Writer</h2>")
 	assert "<h2>Poet</h2>" in poet
@@ -49,6 +57,7 @@ def test_catalog_links_to_built_stories(tmp_path, monkeypatch):
 	for section, count in [(poet, 1), (writer, 2)]:
 		assert section.count("<ul>") == 1
 		assert section.count("<li>") == count
+
 	locations = []
 	for slug, title in [("second", "Apple"), ("first", "Zebra")]:
 		href = f"writer/{slug}/web/index.html"
@@ -81,6 +90,7 @@ def test_catalog_links_to_built_stories(tmp_path, monkeypatch):
 def test_story_cover_is_copied_and_removed_when_source_is_removed(
 	tmp_path, monkeypatch
 ):
+	"""Check that rebuilding after removing a cover clears both the image and its HTML reference."""
 	monkeypatch.chdir(tmp_path)
 	folder = Path("stories/source/writer/evening")
 	folder.mkdir(parents=True)
@@ -91,7 +101,7 @@ def test_story_cover_is_copied_and_removed_when_source_is_removed(
 	cover = folder / "cover.png"
 	cover.write_bytes(b"fictional cover image")
 
-	_, page = build_story(folder)
+	_, page = publish.build_story(folder)
 	html = page.read_text()
 	assert 'src="cover.png"' in html
 	assert 'alt="Cover of Evening"' in html
@@ -99,12 +109,13 @@ def test_story_cover_is_copied_and_removed_when_source_is_removed(
 	assert (page.parent / "cover.png").read_bytes() == cover.read_bytes()
 
 	cover.unlink()
-	build_story(folder)
+	publish.build_story(folder)
 	assert 'src="cover.png"' not in page.read_text()
 	assert not (page.parent / "cover.png").exists()
 
 
 def test_build_directory_recursively(tmp_path, monkeypatch):
+	"""Narrow a build from a library to one story and check which editions remain."""
 	monkeypatch.chdir(tmp_path)
 	for slug in ("first", "second"):
 		folder = Path("library/group/writer") / slug
@@ -118,7 +129,7 @@ def test_build_directory_recursively(tmp_path, monkeypatch):
 		("library/group/writer/second", ["second"]),
 	]:
 		monkeypatch.setattr("sys.argv", ["msk", "build", source])
-		main()
+		cli.main()
 		assert (
 			sorted(
 				p.parent.parent.name
